@@ -1,7 +1,5 @@
-
-
 const Board = () => {
-  return <div className="album container">Board</div>;
-};
+  return <div className="Board container">Board</div>
+}
 
-export default Board;
+export default Board

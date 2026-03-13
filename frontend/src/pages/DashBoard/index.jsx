@@ -1,7 +1,5 @@
-
-
 const DashBoard = () => {
-  return <div className="album container">DashBoard</div>;
-};
+  return <div className="DashBoard container">DashBoard</div>
+}
 
-export default DashBoard;
+export default DashBoard

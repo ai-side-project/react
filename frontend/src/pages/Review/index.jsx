@@ -1,5 +1,5 @@
-const DashBoard = () => {
+const Review = () => {
   return <div className="review container"> review</div>
 }
 
-export default DashBoard
+export default Review

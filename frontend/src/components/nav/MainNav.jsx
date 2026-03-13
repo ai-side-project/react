@@ -8,6 +8,14 @@ const MainNav = () => {
       <ul>
         <Link to="/">
           <li
+            className={`${select === "Intro" ? "check" : ""}`}
+            onClick={() => setSelect("Intro")}
+          >
+            Intro
+          </li>
+        </Link>
+        <Link to="/home">
+          <li
             className={`${select === "Home" ? "check" : ""}`}
             onClick={() => setSelect("Home")}
           >
@@ -28,22 +36,6 @@ const MainNav = () => {
             onClick={() => setSelect("Board")}
           >
             Board
-          </li>
-        </Link>
-        <Link to="/album">
-          <li
-            className={`${select === "Album" ? "check" : ""}`}
-            onClick={() => setSelect("Album")}
-          >
-            Album
-          </li>
-        </Link>
-        <Link to="/theme">
-          <li
-            className={`${select === "Theme" ? "check" : ""}`}
-            onClick={() => setSelect("Theme")}
-          >
-            Theme
           </li>
         </Link>
         <Link to="/review">

@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  # 1. MySQL 데이터베이스 서비스
+  db:
+    image: mysql:8.0
+    container_name: project_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"
+      MYSQL_DATABASE: side_project
+      TZ: Asia/Seoul
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  redis:
+    image: redis:alpine
+    container_name: project_redis
+    restart: always
+    ports:
+      - "6379:6379"
+  # 2. 백엔드 서비스 (선택 사항)
+  backend:
+    build:
+      context: ./backend # 백엔드 폴더 안의 Dockerfile을 읽어서 빌드
+    container_name: project_backend
+    restart: always
+    ports:
+      - "5000:5000" # 백엔드 사용 포트에 맞게 수정 (예: 3000, 8080 등)
+    depends_on:
+      - db # DB가 먼저 켜진 후 백엔드가 켜지도록 설정
+    env_file:
+      - ./backend/.env # 백엔드의 환경변수 파일 연동
+    volumes:
+      - ./backend:/app # ✨ 내 컴퓨터의 백엔드 폴더를 도커 안의 /app 폴더와 실시간 연결
+      - /app/node_modules # ✨ 도커 안에서 설치한 모듈은 덮어쓰지 않도록 보호

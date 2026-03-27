@@ -13,9 +13,14 @@ const homeRouter = require("./routes/home_router")
 const reviewRouter = require("./routes/reveiw_router")
 const passportConfig = require("./passport")
 const { RedisStore } = require("connect-redis")
-const { createClient } = require("redis")
-const redisClient = createClient()
+//const { createClient } = require("redis")
+//const redisClient = createClient()
 const pool = require("./db/db")
+//redisClient.connect().catch(console.error)
+const { createClient } = require("redis")
+const redisClient = createClient({
+  url: `redis://${process.env.REDIS_HOST || "localhost"}:${process.env.REDIS_PORT || 6379}`,
+})
 redisClient.connect().catch(console.error)
 
 pool

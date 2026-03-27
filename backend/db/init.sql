@@ -28,3 +28,9 @@ INSERT INTO users (username, password) VALUES ('apple', '1234');
 
 -- 확인용 조회
 SELECT * FROM users;
+
+INSERT INTO boards (name, slug) VALUES 
+('자유게시판', 'free'),
+('삼성전자', 'samsung'),
+('SK하이닉스', 'skhynix'),
+('카카오', 'kakao');

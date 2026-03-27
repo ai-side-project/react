@@ -4,7 +4,7 @@
     "password": "1234",
     "database": "side_project",
     "port": "3306",
-    "host": "localhost",
+    "host": "db",
     "dialect": "mysql",
     "logging": false
   },
@@ -12,7 +12,7 @@
     "username": "root",
     "password": null,
     "database": "side_project",
-    "host": "localhost",
+    "host": "db",
     "dialect": "mysql"
   },
   "production": {
@@ -20,7 +20,7 @@
     "password": "1234",
     "database": "side_project",
     "port": "3306",
-    "host": "localhost",
+    "host": "db",
     "dialect": "mysql"
   }
 }

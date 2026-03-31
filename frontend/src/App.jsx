@@ -3,13 +3,15 @@ import { useEffect } from "react"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import { Routes, Route } from "react-router"
+//import { Routes, Route } from "react-router"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import DashBoard from "./pages/DashBoard"
 import Board from "./pages/Board"
 import Intro from "./pages/Intro"
 import Home from "./pages/Home"
 import Review from "./pages/Review"
 import Loading from "./components/Loading"
+import Join from "./components/auth/Join"
 import "./App.css"
 
 function App() {
@@ -41,6 +43,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Intro />} />
+          <Route path="/join" element={<Join />} />
           <Route path="/dash" element={<DashBoard />} />
           <Route path="/board" element={<Board />} />
           <Route path="/home" element={<Home />} />

@@ -17,33 +17,37 @@ function Header() {
   // const [errMessage, setErrMessage] = useState(true);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    const result = await authLogin(email, password)
+    e.preventDefault();
+    const result = await authLogin(email, password);
 
     if (result?.success) {
-      setNickname("")
-      setEmail("")
-      setPassword("")
-      // fetchPosts();
+      setNickname("");
+      setEmail("");
+      setPassword("");
     }
-  }
+  };
+
+  const handleJoin = async (e) => {
+    e.preventDefault();
+    const result = await authJoin(nickname, email, password);
+
+    if (result?.success) {
+      setNickname("");
+      setEmail("");
+      setPassword("");
+      setShowLogin(true);
+    }
+  };
 
   const handleLogout = () => {
-    logout()
-    // logoutList();
-  }
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setErrMessage(false);
-  //   }, 3000);
-  // }, [error]);
+    logout();
+  };
 
   return (
-    <header className="header">
-      <div className="container header-content">
-        <div className="header-left">
-          <img className="logo" src="/assets/img/image2.png" width="200px" />
-          <Navigation />
+    <header className="site-header">
+      <div className="container site-header-inner">
+        <div className="site-brand-wrap">
+          <div className="site-brand-text">AI 주식 분석 플랫폼</div>
         </div>
 
         <div className="header-right">
@@ -73,7 +77,7 @@ function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

@@ -1,54 +1,33 @@
-import { useState } from "react"
-import { Link } from "react-router"
+import { NavLink } from "react-router-dom";
+
+const menus = [
+  { to: "/", label: "인트로" },
+  { to: "/home", label: "종목분석" },
+  { to: "/dash", label: "대시보드" },
+  { to: "/board", label: "종목토론방" },
+  { to: "/review", label: "AI 트레이더" },
+];
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home")
   return (
-    <div className="MainNav">
-      <ul>
-        <Link to="/">
-          <li
-            className={`${select === "Intro" ? "check" : ""}`}
-            onClick={() => setSelect("Intro")}
-          >
-            Intro
+    <nav className="main-nav">
+      <ul className="main-nav-list">
+        {menus.map((menu) => (
+          <li key={menu.to}>
+            <NavLink
+              to={menu.to}
+              end={menu.to === "/"}
+              className={({ isActive }) =>
+                isActive ? "main-nav-link active" : "main-nav-link"
+              }
+            >
+              {menu.label}
+            </NavLink>
           </li>
-        </Link>
-        <Link to="/home">
-          <li
-            className={`${select === "Home" ? "check" : ""}`}
-            onClick={() => setSelect("Home")}
-          >
-            Home
-          </li>
-        </Link>
-        <Link to="/dash">
-          <li
-            className={`${select === "Dash" ? "check" : ""}`}
-            onClick={() => setSelect("Dash")}
-          >
-            DashBoard
-          </li>
-        </Link>
-        <Link to="/board">
-          <li
-            className={`${select === "Board" ? "check" : ""}`}
-            onClick={() => setSelect("Board")}
-          >
-            Board
-          </li>
-        </Link>
-        <Link to="/review">
-          <li
-            className={`${select === "Review" ? "check" : ""}`}
-            onClick={() => setSelect("Review")}
-          >
-            Review
-          </li>
-        </Link>
+        ))}
       </ul>
-    </div>
-  )
-}
+    </nav>
+  );
+};
 
-export default MainNav
+export default MainNav;

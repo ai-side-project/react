@@ -1,12 +1,10 @@
-import { useState } from "react"
-import { useAuthStore } from "../store/authStore"
-import Login from "./auth/Login"
-import Join from "./auth/Join"
-import Navigation from "./nav/MainNav"
-// import Loading from "./Loading";
+import { useState } from "react";
+import { useAuthStore } from "../store/authStore";
+import Login from "./auth/Login";
+import Join from "./auth/Join";
+import Navigation from "./nav/MainNav";
 
 function Header() {
-  // Zustand에서 상태와 액션 가져오기
   const {
     user,
     login: authLogin,
@@ -14,51 +12,63 @@ function Header() {
     logout,
     loading,
     error,
-  } = useAuthStore()
+  } = useAuthStore();
 
-  // 로컬 상태 (폼 입력용)
-  const [nickname, setNickname] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  // const [errMessage, setErrMessage] = useState(true);
-  const [select, setSelect] = useState(true)
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showLogin, setShowLogin] = useState(true);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    const result = await authLogin(email, password)
+    e.preventDefault();
+    const result = await authLogin(email, password);
 
     if (result?.success) {
-      setNickname("")
-      setEmail("")
-      setPassword("")
-      // fetchPosts();
+      setNickname("");
+      setEmail("");
+      setPassword("");
     }
-  }
+  };
 
-  const handleJoin = async () => {
-    await authJoin(nickname, email, password)
-  }
+  const handleJoin = async (e) => {
+    e.preventDefault();
+    const result = await authJoin(nickname, email, password);
+
+    if (result?.success) {
+      setNickname("");
+      setEmail("");
+      setPassword("");
+      setShowLogin(true);
+    }
+  };
+
   const handleLogout = () => {
-    logout()
-    // logoutList();
-  }
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setErrMessage(false);
-  //   }, 3000);
-  // }, [error]);
+    logout();
+  };
 
   return (
-    <header className="header">
-      <div className="container header-content">
-        <div className="header-left">
-          <img className="logo" src="/assets/img/image2.png" width="200px" />
-          <Navigation />
+    <header className="site-header">
+      <div className="container site-header-inner">
+        <div className="site-brand-wrap">
+          <div className="site-brand-text">AI 주식 분석 플랫폼</div>
         </div>
 
-        <div className="header-right">
-          <div>
-            {select ? (
+        <Navigation />
+
+        <div className="site-auth-area">
+          {user ? (
+            <Login
+              user={user}
+              handleLogin={handleLogin}
+              handleLogout={handleLogout}
+              loading={loading}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+            />
+          ) : showLogin ? (
+            <div className="site-auth-box">
               <Login
                 user={user}
                 handleLogin={handleLogin}
@@ -69,7 +79,16 @@ function Header() {
                 password={password}
                 setPassword={setPassword}
               />
-            ) : (
+              <button
+                type="button"
+                className="auth-toggle-btn"
+                onClick={() => setShowLogin(false)}
+              >
+                회원가입
+              </button>
+            </div>
+          ) : (
+            <div className="site-auth-box">
               <Join
                 handleJoin={handleJoin}
                 loading={loading}
@@ -80,17 +99,21 @@ function Header() {
                 password={password}
                 setPassword={setPassword}
               />
-            )}
-          </div>
-          <div className="authSelector" onClick={() => setSelect(!select)}>
-            {user ? "" : select ? "회원가입" : "로그인"}
-          </div>
+              <button
+                type="button"
+                className="auth-toggle-btn"
+                onClick={() => setShowLogin(true)}
+              >
+                로그인
+              </button>
+            </div>
+          )}
+
           {error && <p className="login-error">{error}</p>}
         </div>
       </div>
-      {/* {loading && <Loading />} */}
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

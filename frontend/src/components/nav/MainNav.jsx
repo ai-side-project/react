@@ -10,16 +10,14 @@ const menus = [
 
 const MainNav = () => {
   return (
-    <nav className="site-nav-v2">
-      <ul className="site-nav-v2__list">
+    <nav className="MainNav">
+      <ul>
         {menus.map((menu) => (
           <li key={menu.to}>
             <NavLink
               to={menu.to}
               end={menu.to === "/"}
-              className={({ isActive }) =>
-                isActive ? "site-nav-v2__link active" : "site-nav-v2__link"
-              }
+              className={({ isActive }) => (isActive ? "check" : "")}
             >
               {menu.label}
             </NavLink>

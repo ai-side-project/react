@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/authStore";
-import { Link } from "react-router-dom"; // ✨ 링크 이동을 위해 추가
+import { Link } from "react-router-dom"; // :sparkles: 링크 이동을 위해 추가
 import Login from "./auth/Login";
 //import Join from "./auth/Join"
 import Navigation from "./nav/MainNav";
@@ -43,7 +43,9 @@ function Header() {
     <header className="header">
       <div className="container header-content">
         <div className="header-left">
-          <img className="logo" src="/assets/img/image2.png" width="200px" />
+          <Link to="/" className="logo-text">
+            AI 주식 분석 플랫폼
+          </Link>
           <Navigation />
         </div>
 

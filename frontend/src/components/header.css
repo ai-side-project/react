@@ -140,12 +140,19 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.welcome-text {
+  font-size: 14px;
   font-weight: 700;
+  color: #374151;
+  white-space: nowrap;
 }
 
 /* ---------- Navigator ---------- */
 .MainNav {
   min-width: 0;
+  margin-left: 36px;
 }
 
 .MainNav ul {

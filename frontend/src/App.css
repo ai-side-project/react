@@ -538,3 +538,22 @@ button:active {
   display: flex;
   align-items: center;
 }
+/* 회원가입 페이지 안에 있는 auth-form만 특별 대우 */
+.join-page-container .auth-form {
+  flex-direction: column !important; /* 세로 정렬 */
+  max-width: 400px;
+  margin: 0 auto;
+  gap: 15px;
+}
+
+/* 회원가입 페이지 안에 있는 닉네임 입력창만 절대 위치 해제 */
+.join-page-container .nickInput {
+  position: static !important;
+  width: 100% !important;
+}
+
+/* 회원가입 페이지 안에 있는 버튼만 가득 채우기 */
+.join-page-container .auth-form button {
+  width: 100% !important;
+  height: 45px;
+}

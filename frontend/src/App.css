@@ -287,3 +287,90 @@ button:active {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+/* 인증 관련 버튼 스타일 통합 (로그인, 로그아웃, 회원가입) 
+   기존 button { background: #fff } 스타일을 확실하게 덮어씌웁니다.
+*/
+.auth-form button,
+.btn-logout,
+.authSelector {
+  /* 1. 기본 스타일 강제 초기화 */
+  all: unset;
+  box-sizing: border-box;
+
+  /* 2. 구조 및 크기 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+
+  /* 3. 색상 (중요: !important를 사용하여 상단의 background: #fff를 이김) */
+  background-color: var(--primary) !important;
+  color: var(--on-primary) !important;
+  border: 1px solid var(--primary) !important;
+
+  /* 4. 텍스트 및 효과 */
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none; /* Link 태그용 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* 호버 효과 통일 */
+.auth-form button:hover,
+.btn-logout:hover,
+.authSelector:hover {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  color: #ffffff !important;
+}
+
+/* 클릭 효과 통일 */
+.auth-form button:active,
+.btn-logout:active,
+.authSelector:active {
+  transform: translateY(1px);
+}
+/* 1. 버튼 그룹을 가로로 정렬 */
+.auth-button-group {
+  display: flex;
+  align-items: center; /* 높이 중앙 맞춤 */
+  gap: 8px; /* 버튼 사이 간격 */
+}
+
+/* 2. 기존 authSelector에서 마진 제거 및 크기 고정 */
+.authSelector {
+  margin-top: 0 !important; /* 아래로 떨어지는 범인 제거 */
+  min-width: 80px; /* 버튼이 찌그러지지 않게 최소 너비 설정 */
+}
+
+/* 3. Header-right의 불필요한 마진 제거 */
+.header-right {
+  margin-bottom: 0 !important; /* 위아래 위치를 맞추기 위해 조정 */
+  display: flex;
+  align-items: center;
+}
+/* 회원가입 페이지 안에 있는 auth-form만 특별 대우 */
+.join-page-container .auth-form {
+  flex-direction: column !important; /* 세로 정렬 */
+  max-width: 400px;
+  margin: 0 auto;
+  gap: 15px;
+}
+
+/* 회원가입 페이지 안에 있는 닉네임 입력창만 절대 위치 해제 */
+.join-page-container .nickInput {
+  position: static !important;
+  width: 100% !important;
+}
+
+/* 회원가입 페이지 안에 있는 버튼만 가득 채우기 */
+.join-page-container .auth-form button {
+  width: 100% !important;
+  height: 45px;
+}

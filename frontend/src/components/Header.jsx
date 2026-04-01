@@ -1,77 +1,84 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/authStore";
-import { Link } from "react-router-dom"; // ✨ 링크 이동을 위해 추가
+import { Link } from "react-router-dom";
 import Login from "./auth/Login";
-//import Join from "./auth/Join"
 import Navigation from "./nav/MainNav";
-// import Loading from "./Loading";
 import "./header.css";
 
 function Header() {
-  // Zustand에서 상태와 액션 가져오기
-  const { user, login: authLogin, logout, loading, error } = useAuthStore();
+  // 전역 인증 상태
+  const { user, login: authLogin, logout, loading } = useAuthStore();
 
-  // 로컬 상태 (폼 입력용)
-  const [nickname, setNickname] = useState("");
+  // 로컬 상태 (로그인 폼 입력값)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [errMessage, setErrMessage] = useState(true);
 
+  // 로그인 처리
   const handleLogin = async (e) => {
     e.preventDefault();
+
     const result = await authLogin(email, password);
 
     if (result?.success) {
-      setNickname("");
       setEmail("");
       setPassword("");
-      // fetchPosts();
     }
   };
 
+  // 로그아웃 처리
   const handleLogout = () => {
     logout();
-    // logoutList();
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setErrMessage(false);
-  //   }, 3000);
-  // }, [error]);
 
   return (
-    <header className="header">
-      <div className="container header-content">
-        <div className="header-left">
-          <img className="logo" src="/assets/img/image2.png" width="200px" />
+    <header className="site-header-v3">
+      <div className="container site-header-v3__inner">
+        {/* 왼쪽 영역: 브랜드 + 네비게이션 */}
+        <div className="site-header-v3__left">
+          <Link to="/" className="site-header-v3__brand">
+            AI 주식 분석 플랫폼
+          </Link>
+
           <Navigation />
         </div>
 
-        <div className="header-right">
-          {/* 버튼들을 가로로 나란히 묶어주는 박스 추가 */}
-          <div className="auth-button-group">
-            {!user ? (
-              <>
-                <Login
-                  user={user}
-                  handleLogin={handleLogin}
-                  loading={loading}
-                  email={email}
-                  setEmail={setEmail}
-                  password={password}
-                  setPassword={setPassword}
-                />
-                <Link to="/join" className="authSelector">
-                  회원가입
-                </Link>
-              </>
-            ) : (
-              <button onClick={handleLogout} className="btn-logout">
-                로그아웃
-              </button>
-            )}
+        {/* 오른쪽 영역: 로그인/회원가입 또는 환영문구/로그아웃 */}
+        <div className="site-header-v3__right">
+          <div className="site-header-v3__auth">
+            <div className="site-header-v3__login-wrap">
+              {!user ? (
+                <>
+                  <Login
+                    user={user}
+                    handleLogin={handleLogin}
+                    loading={loading}
+                    email={email}
+                    setEmail={setEmail}
+                    password={password}
+                    setPassword={setPassword}
+                  />
+
+                  <Link to="/join" className="site-header-v3__join">
+                    회원가입
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span className="site-header-v3__welcome">
+                    {user.nickname || user.email || "사용자"} 님 환영합니다!
+                  </span>
+
+                  <button
+                    type="button"
+                    className="site-header-v3__logout"
+                    onClick={handleLogout}
+                  >
+                    로그아웃
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          {error && <p className="login-error">{error}</p>}
         </div>
       </div>
     </header>

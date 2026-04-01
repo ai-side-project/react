@@ -1,4 +1,11 @@
-.site-header-v2 {
+header.css 최종본
+/* =========================
+   Header 전용 스타일
+   - App.css의 기존 .header와 충돌하지 않도록
+     완전히 새로운 클래스명 사용
+========================= */
+
+.site-header-v3 {
   position: sticky;
   top: 0;
   z-index: 20;
@@ -7,108 +14,136 @@
   border-bottom: 1px solid #e8edf5;
 }
 
-.site-header-v2__inner {
+/* 헤더 내부 전체 정렬 */
+.site-header-v3__inner {
   min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
 }
 
-.site-header-v2__left {
+/* 왼쪽: 브랜드 + 메뉴 */
+.site-header-v3__left {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
   min-width: 0;
+  flex: 1;
 }
 
-.site-header-v2__brand {
-  font-size: 15px;
+/* 브랜드 텍스트 */
+.site-header-v3__brand {
+  font-size: 14px;
   font-weight: 800;
   color: #2f89f2;
   letter-spacing: -0.03em;
   white-space: nowrap;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
-.site-header-v2__right {
+/* 오른쪽: 로그인 영역 */
+.site-header-v3__right {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-/* 로그인 전 */
-.site-header-v2__auth {
+/* 로그인/회원가입/로그아웃 묶음 */
+.site-header-v3__auth {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.site-header-v2__auth .auth-form {
+/* 로그인 폼 + 버튼 묶음 */
+.site-header-v3__login-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Login 컴포넌트 내부 auth-form 스타일 보정 */
+.site-header-v3__login-wrap .auth-form {
   display: flex;
   align-items: center;
   gap: 8px;
   position: relative;
 }
 
-.site-header-v2__auth .auth-form input {
+.site-header-v3__login-wrap .auth-form input {
   height: 36px;
-  min-width: 120px;
+  width: 120px;
+  min-width: 0;
   padding: 0 12px;
   border: 1px solid #dfe6f0;
   border-radius: 10px;
   background: #fff;
   outline: none;
+  color: #111827;
 }
 
-.site-header-v2__auth .auth-form input:focus {
+.site-header-v3__login-wrap .auth-form input:focus {
   border-color: #bfdcff;
-  box-shadow: 0 0 0 4px rgba(63, 151, 255, 0.1);
+  background: #f7fbff;
+  box-shadow: 0 0 0 4px rgba(63, 151, 255, 0.12);
 }
 
-.site-header-v2__auth .auth-form button {
+/* 로그인 버튼 */
+.site-header-v3__login-wrap .auth-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 36px;
-  padding: 0 12px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.site-header-v3__login-wrap .auth-form button:hover {
+  background: #4338ca;
+}
+
+/* 회원가입 버튼 */
+.site-header-v3__join {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 14px;
   border: none;
   border-radius: 10px;
   background: #3f97ff;
   color: #fff;
   font-size: 13px;
   font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.site-header-v2__auth .auth-form button:hover {
+.site-header-v3__join:hover {
   background: #2f89f2;
 }
 
-.site-header-v2__join {
-  font-size: 13px;
-  font-weight: 600;
-  color: #7b8190;
-  text-decoration: none;
-}
-
-.site-header-v2__join:hover {
-  color: #2f89f2;
-}
-
-/* 로그인 후 */
-.site-header-v2__user {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.site-header-v2__welcome {
+/* 로그인 후 환영 문구 */
+.site-header-v3__welcome {
   font-size: 14px;
   font-weight: 600;
   color: #111827;
   white-space: nowrap;
 }
 
-.site-header-v2__logout {
+/* 로그아웃 버튼 */
+.site-header-v3__logout {
   height: 36px;
   padding: 0 14px;
   border: none;
@@ -120,24 +155,38 @@
   cursor: pointer;
 }
 
-.site-header-v2__logout:hover {
+.site-header-v3__logout:hover {
   background: #2f89f2;
 }
 
-.site-header-v2__error {
-  margin: 0;
+/* 에러 문구 */
+.site-header-v3__error {
+  margin: 8px 0 0;
   font-size: 12px;
   color: #d92d20;
 }
 
-/* 네비 */
+/* =========================
+   네비게이션 스타일
+   - MainNav.jsx의 site-nav-v2와 연결
+========================= */
+
+.site-nav-v2 {
+  min-width: 0;
+}
+
 .site-nav-v2__list {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   margin: 0;
   padding: 0;
+  flex-wrap: nowrap;
+}
+
+.site-nav-v2__list li {
+  flex: 0 0 auto;
 }
 
 .site-nav-v2__link {
@@ -145,13 +194,14 @@
   align-items: center;
   justify-content: center;
   height: 34px;
-  padding: 0 12px;
+  padding: 0 10px;
   border-radius: 10px;
   color: #717b8b;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
   transition: 0.18s ease;
+  white-space: nowrap;
 }
 
 .site-nav-v2__link:hover {
@@ -160,27 +210,30 @@
 }
 
 .site-nav-v2__link.active {
-  color: #2f89f2;
   background: #eef5ff;
+  color: #2f89f2;
 }
 
-/* 반응형 */
+/* =========================
+   반응형
+========================= */
+
 @media (max-width: 1024px) {
-  .site-header-v2__inner {
-    flex-direction: column;
-    align-items: stretch;
+  .site-header-v3__inner {
+    grid-template-columns: 1fr;
     gap: 14px;
     padding: 14px 0;
   }
 
-  .site-header-v2__left {
+  .site-header-v3__left {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
   }
 
-  .site-header-v2__right {
-    align-items: flex-start;
+  .site-header-v3__right {
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .site-nav-v2__list {
@@ -189,25 +242,33 @@
 }
 
 @media (max-width: 640px) {
-  .site-header-v2__auth {
+  .site-header-v3__right {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .site-header-v3__auth {
     width: 100%;
   }
 
-  .site-header-v2__auth .auth-form {
+  .site-header-v3__login-wrap {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .site-header-v3__login-wrap .auth-form {
     flex-wrap: wrap;
     width: 100%;
   }
 
-  .site-header-v2__auth .auth-form input,
-  .site-header-v2__auth .auth-form button,
-  .site-header-v2__join {
+  .site-header-v3__login-wrap .auth-form input,
+  .site-header-v3__login-wrap .auth-form button,
+  .site-header-v3__join,
+  .site-header-v3__logout {
     width: 100%;
   }
 
-  .site-header-v2__user {
-    flex-direction: column;
-    align-items: flex-start;
+  .site-header-v3__welcome {
+    white-space: normal;
   }
 }

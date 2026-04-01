@@ -227,24 +227,24 @@
   border: 1px solid #edf1f6;
   border-radius: 20px;
   padding: 16px 16px 14px;
-  min-height: 128px;
+  min-height: 80px;
   box-shadow: 0 12px 20px rgba(17, 24, 39, 0.04);
 }
 
 .feature-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: #eef5ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  margin-bottom: 14px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .feature-card h3 {
-  margin: 8px 0 6px;
+  margin: 6px 0 4px;
   color: #111827;
   font-size: 17px;
   font-weight: 700;

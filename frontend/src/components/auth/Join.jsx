@@ -1,6 +1,63 @@
 import { useState } from "react"
 import { useAuthStore } from "../../store/authStore" // 경로 맞게 수정
 import { useNavigate } from "react-router-dom" // 가입 후 이동을 위해 추가
+import styled from "styled-components"
+
+// 기존 join-page-container 역할: 화면 전체 정렬
+const JoinPageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh; /* 화면 꽉 차게 해서 수직 중앙 정렬 */
+  background-color: #f9f9f9;
+`
+const Title = styled.h2`
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+`
+// 기존 auth-form 역할: 입력창들을 감싸는 박스
+const AuthForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px; /* 너무 넓어지지 않게 고정 */
+  padding: 20px;
+  gap: 10px; /* 입력창 사이 간격 */
+`
+
+const Input = styled.input`
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+
+  &:disabled {
+    background-color: #eee;
+  }
+`
+
+const SubmitButton = styled.button`
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #0056b3; /* 마우스 올렸을 때 색상 변화 */
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`
 
 const Join = () => {
   //Join 내부에서 직접 상태 관리
@@ -25,10 +82,11 @@ const Join = () => {
   }
 
   return (
-    <div className="join-page-container">
-      <h2>회원가입</h2>
-      <form onSubmit={handleJoinSubmit} className="auth-form">
-        <input
+    <JoinPageContainer>
+      <Title>회원가입</Title>
+
+      <AuthForm onSubmit={handleJoinSubmit}>
+        <Input
           type="text"
           placeholder="이메일"
           value={email}
@@ -36,7 +94,7 @@ const Join = () => {
           required
           disabled={loading}
         />
-        <input
+        <Input
           type="password"
           placeholder="비밀번호"
           value={password}
@@ -44,8 +102,7 @@ const Join = () => {
           required
           disabled={loading}
         />
-        <input
-          className="nickInput"
+        <Input
           type="text"
           placeholder="닉네임"
           value={nickname}
@@ -53,13 +110,14 @@ const Join = () => {
           required
           disabled={loading}
         />
-        <button type="submit" disabled={loading}>
+
+        <SubmitButton type="submit" disabled={loading}>
           {loading ? "회원 가입 중..." : "가입하기"}
-        </button>
-      </form>
-      {/* 에러가 있으면 화면에 표시 */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+        </SubmitButton>
+      </AuthForm>
+
+      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+    </JoinPageContainer>
   )
 }
 

@@ -47,26 +47,27 @@ function Header() {
         </div>
 
         <div className="header-right">
-          <div>
-            {!user && (
-              <Login
-                user={user}
-                handleLogin={handleLogin}
-                handleLogout={handleLogout}
-                loading={loading}
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-              />
-            )}
-          </div>
-          <div className="authSelector">
-            {/*  회원가입 버튼을 누르면 /join 페이지로 이동! */}
-            {user ? (
-              <button onClick={handleLogout}>로그아웃</button>
+          {/* 버튼들을 가로로 나란히 묶어주는 박스 추가 */}
+          <div className="auth-button-group">
+            {!user ? (
+              <>
+                <Login
+                  user={user}
+                  handleLogin={handleLogin}
+                  loading={loading}
+                  email={email}
+                  setEmail={setEmail}
+                  password={password}
+                  setPassword={setPassword}
+                />
+                <Link to="/join" className="authSelector">
+                  회원가입
+                </Link>
+              </>
             ) : (
-              <Link to="/join">회원가입</Link>
+              <button onClick={handleLogout} className="btn-logout">
+                로그아웃
+              </button>
             )}
           </div>
           {error && <p className="login-error">{error}</p>}

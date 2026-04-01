@@ -1,37 +1,38 @@
-import { useState } from "react"
-import { useAuthStore } from "../store/authStore"
-import { Link } from "react-router-dom" // ✨ 링크 이동을 위해 추가
-import Login from "./auth/Login"
+import { useState } from "react";
+import { useAuthStore } from "../store/authStore";
+import { Link } from "react-router-dom"; // ✨ 링크 이동을 위해 추가
+import Login from "./auth/Login";
 //import Join from "./auth/Join"
-import Navigation from "./nav/MainNav"
+import Navigation from "./nav/MainNav";
 // import Loading from "./Loading";
+import "./header.css";
 
 function Header() {
   // Zustand에서 상태와 액션 가져오기
-  const { user, login: authLogin, logout, loading, error } = useAuthStore()
+  const { user, login: authLogin, logout, loading, error } = useAuthStore();
 
   // 로컬 상태 (폼 입력용)
-  const [nickname, setNickname] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // const [errMessage, setErrMessage] = useState(true);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    const result = await authLogin(email, password)
+    e.preventDefault();
+    const result = await authLogin(email, password);
 
     if (result?.success) {
-      setNickname("")
-      setEmail("")
-      setPassword("")
+      setNickname("");
+      setEmail("");
+      setPassword("");
       // fetchPosts();
     }
-  }
+  };
 
   const handleLogout = () => {
-    logout()
+    logout();
     // logoutList();
-  }
+  };
   // useEffect(() => {
   //   setTimeout(() => {
   //     setErrMessage(false);
@@ -74,7 +75,7 @@ function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

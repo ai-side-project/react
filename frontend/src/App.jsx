@@ -3,8 +3,7 @@ import { useEffect } from "react"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-//import { Routes, Route } from "react-router"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import DashBoard from "./pages/DashBoard"
 import Board from "./pages/Board"
 import Intro from "./pages/Intro"
@@ -12,35 +11,46 @@ import Home from "./pages/Home"
 import Review from "./pages/Review"
 import Loading from "./components/Loading"
 import Join from "./components/auth/Join"
-import "./App.css"
+
+// 1. 스타일드 컴포넌트 및 전역 스타일 임포트
+import GlobalStyle from "./styles/Globalstyle"
+import { AppWrapper, MainContent } from "./styles/Layout.styles"
+import styled from "styled-components"
+
+// 2. 로딩 화면 전용 스타일 (임시 인라인 대신 사용)
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  opacity: 0.2; /* 기존 opcity 오타 수정 */
+`
 
 function App() {
   const { user, isChecking, checkAuth } = useAuthStore()
 
   useEffect(() => {
-    // 새로고침 하자마자 서버에 세션 유효성 확인
     checkAuth()
   }, [])
+
   if (isChecking) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          opcity: 0.2,
-        }}
-      >
-        {/* <p>로그인 상태를 확인하고 있습니다...</p> */}
+      <LoadingWrapper>
+        <GlobalStyle /> {/* 로딩 중에도 전역 배경색 등을 유지하기 위해 추가 */}
         <Loading />
-      </div>
+      </LoadingWrapper>
     )
   }
+
   return (
-    <div className="App">
+    <AppWrapper>
+      {/* 3. 전역 스타일 적용 */}
+      <GlobalStyle />
+
       <Header />
-      <main>
+
+      {/* 4. 기존 <main>을 스타일이 적용된 MainContent로 변경 */}
+      <MainContent>
         <Routes>
           <Route path="/" element={<Intro />} />
           <Route path="/join" element={<Join />} />
@@ -49,9 +59,10 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/review" element={<Review />} />
         </Routes>
-      </main>
+      </MainContent>
+
       <Footer />
-    </div>
+    </AppWrapper>
   )
 }
 

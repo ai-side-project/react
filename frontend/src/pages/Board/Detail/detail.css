@@ -1,0 +1,295 @@
+/* 색상 변수 (차분한 블루/그레이 톤) */
+:root {
+  --bg: #f5f7f9; /* 전체 배경: 아주 연한 회색 */
+  --card: #ffffff; /* 카드 배경: 흰색 */
+  --text: #243045; /* 본문 텍스트(진한 블루-그레이) */
+  --muted: #6b7280; /* 보조 텍스트(회색) */
+  --border: #e6e9ef; /* 카드 테두리 색 */
+  --primary: #3b82f6; /* 포인트 블루(하나만 사용) */
+  --shadow: rgba(15, 23, 42, 0.04);
+}
+
+/* 페이지 배경 및 중앙 정렬 */
+.detail-page {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 56px 24px 80px;
+  box-sizing: border-box;
+}
+
+/* 중앙 컨테이너 */
+.detail-container {
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+/* 카드 공통 스타일 */
+.post-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 36px 40px;
+  box-shadow: 0 6px 18px var(--shadow);
+  box-sizing: border-box;
+}
+
+/* 1. 제목 영역 */
+.post-header {
+  padding-bottom: 22px;
+  border-bottom: 1px solid #edf1f5;
+  margin-bottom: 28px;
+}
+
+.post-title {
+  margin: 0 0 14px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--text);
+  word-break: keep-all;
+}
+
+/* 메타 정보: 한 줄 정렬, 응답형에서 세로 정렬 */
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.meta-item strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* 2. 본문 영역 */
+.post-content {
+  font-size: 17px;
+  line-height: 1.95;
+  color: #233142;
+  margin-bottom: 36px;
+  word-break: keep-all;
+}
+
+.post-content h3 {
+  margin: 28px 0 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.post-content p {
+  margin: 0 0 16px;
+}
+
+/* 3. 버튼 영역 */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.left-actions,
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* 버튼 기본 */
+.btn {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+/* Primary (포인트 파란색) */
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  filter: brightness(0.97);
+}
+
+/* Outline (중성) */
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid #d1d5db;
+}
+
+/* Ghost (더 억제된 버튼, 삭제 등) */
+.btn-ghost {
+  background: transparent;
+  color: #6b7280;
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: #f8fafc;
+  border-color: #edf1f5;
+}
+
+/* 작은 버튼(댓글 등록 등) */
+.btn.small {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* 4. 댓글 영역 */
+.comments-section {
+  margin-top: 4px;
+}
+
+.comments-title {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* 댓글 입력 폼 */
+.comment-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.comment-input {
+  flex: 1;
+  min-height: 84px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  resize: vertical;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.comment-input::placeholder {
+  color: #9aa4b2;
+}
+
+.btn.small {
+  height: 48px;
+  min-width: 58px;
+  padding: 0 12px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+/* 댓글 리스트 */
+.comment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #edf1f5;
+}
+
+.comment-item {
+  padding: 18px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.comment-author {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.comment-date {
+  color: var(--muted);
+}
+
+.comment-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #334155;
+}
+
+/* 반응형: 좁아지면 자연스럽게 줄바꿈 */
+@media (max-width: 768px) {
+  .detail-page {
+    padding: 28px 14px 48px;
+  }
+
+  .post-card {
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+
+  .post-title {
+    font-size: 20px;
+  }
+
+  .post-meta {
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .post-content {
+    font-size: 15px;
+  }
+
+  .post-content h3 {
+    font-size: 18px;
+  }
+
+  .post-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .left-actions,
+  .right-actions {
+    width: 100%;
+  }
+
+  .right-actions {
+    justify-content: flex-end;
+  }
+
+  .comment-form {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .btn.small {
+    width: 100%;
+    height: 44px;
+  }
+}

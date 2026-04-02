@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { useAuthStore } from "../../store/authStore" // 경로 맞게 수정
-import { useNavigate } from "react-router-dom" // 가입 후 이동을 위해 추가
-import styled from "styled-components"
+import { useState } from "react";
+import { useAuthStore } from "../../store/authStore"; // 경로 맞게 수정
+import { useNavigate } from "react-router-dom"; // 가입 후 이동을 위해 추가
+import styled from "styled-components";
 
 // 기존 join-page-container 역할: 화면 전체 정렬
 const JoinPageContainer = styled.div`
@@ -12,12 +12,12 @@ const JoinPageContainer = styled.div`
   width: 100%;
   height: 100vh; /* 화면 꽉 차게 해서 수직 중앙 정렬 */
   background-color: #f9f9f9;
-`
+`;
 const Title = styled.h2`
   font-size: 24px;
   color: #333;
   margin-bottom: 20px;
-`
+`;
 // 기존 auth-form 역할: 입력창들을 감싸는 박스
 const AuthForm = styled.form`
   display: flex;
@@ -26,7 +26,7 @@ const AuthForm = styled.form`
   max-width: 400px; /* 너무 넓어지지 않게 고정 */
   padding: 20px;
   gap: 10px; /* 입력창 사이 간격 */
-`
+`;
 
 const Input = styled.input`
   padding: 12px;
@@ -37,7 +37,7 @@ const Input = styled.input`
   &:disabled {
     background-color: #eee;
   }
-`
+`;
 
 const SubmitButton = styled.button`
   padding: 12px;
@@ -57,29 +57,29 @@ const SubmitButton = styled.button`
     background-color: #ccc;
     cursor: not-allowed;
   }
-`
+`;
 
 const Join = () => {
   //Join 내부에서 직접 상태 관리
-  const [nickname, setNickname] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Zustand에서 직접 join 함수와 loading 상태 가져오기
-  const { join: authJoin, loading, error } = useAuthStore()
-  const navigate = useNavigate()
+  const { join: authJoin, loading, error } = useAuthStore();
+  const navigate = useNavigate();
 
   // 직접 회원가입 로직 처리
   const handleJoinSubmit = async (e) => {
-    e.preventDefault() // 폼 제출 새로고침 방지
-    const result = await authJoin(nickname, email, password)
+    e.preventDefault(); // 폼 제출 새로고침 방지
+    const result = await authJoin(nickname, email, password);
 
     // 가입 성공 시 메인 화면으로 이동
     if (result?.success) {
-      alert("회원가입 완료!")
-      navigate("/")
+      alert("회원가입 완료!");
+      navigate("/");
     }
-  }
+  };
 
   return (
     <JoinPageContainer>
@@ -118,7 +118,7 @@ const Join = () => {
 
       {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
     </JoinPageContainer>
-  )
-}
+  );
+};
 
-export default Join
+export default Join;

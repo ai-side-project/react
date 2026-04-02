@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./board.css";
 
 const categories = ["자유게시판", "삼성전자", "SK하이닉스", "카카오"];
@@ -54,6 +55,7 @@ const dummyPosts = [
 const Board = () => {
   const [selectedCategory, setSelectedCategory] = useState("자유게시판");
   const [searchType, setSearchType] = useState("title");
+  const [inputKeyword, setInputKeyword] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -88,10 +90,12 @@ const Board = () => {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setCurrentPage(1);
+    setInputKeyword("");
     setSearchKeyword("");
   };
 
   const handleSearch = () => {
+    setSearchKeyword(inputKeyword);
     setCurrentPage(1);
   };
 
@@ -151,7 +155,11 @@ const Board = () => {
                     currentPosts.map((post) => (
                       <tr key={post.id}>
                         <td>{post.id}</td>
-                        <td className="board-title-cell">{post.title}</td>
+                        <td className="board-title-cell">
+                          <Link to="/board/detail" className="board-title-link">
+                            {post.title}
+                          </Link>
+                        </td>
                         <td>{post.author}</td>
                         <td>{post.date}</td>
                         <td>{post.views}</td>
@@ -185,8 +193,8 @@ const Board = () => {
                     type="text"
                     className="board-search-input"
                     placeholder="검색어를 입력하세요"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    value={inputKeyword}
+                    onChange={(e) => setInputKeyword(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleSearch();
                     }}

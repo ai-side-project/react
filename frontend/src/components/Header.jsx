@@ -68,9 +68,18 @@ function Header() {
                 </Link>
               </>
             ) : (
-              <button onClick={handleLogout} className="btn-logout">
-                로그아웃
-              </button>
+              <div className="user-info">
+                <span className="welcome-text">
+                  {user?.nickname || "사용자"}님 환영합니다.
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="btn-logout"
+                  type="button"
+                >
+                  로그아웃
+                </button>
+              </div>
             )}
           </div>
           {error && <p className="login-error">{error}</p>}

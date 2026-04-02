@@ -135,6 +135,16 @@
   font-weight: 600;
 }
 
+.board-title-link {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.board-title-link:hover {
+  color: #2563eb;
+}
+
 .board-empty {
   padding: 28px 14px !important;
   color: #7b8190 !important;

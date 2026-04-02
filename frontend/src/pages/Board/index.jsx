@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./board.css";
 
 const categories = ["자유게시판", "삼성전자", "SK하이닉스", "카카오"];
@@ -154,7 +155,11 @@ const Board = () => {
                     currentPosts.map((post) => (
                       <tr key={post.id}>
                         <td>{post.id}</td>
-                        <td className="board-title-cell">{post.title}</td>
+                        <td className="board-title-cell">
+                          <Link to="/board/detail" className="board-title-link">
+                            {post.title}
+                          </Link>
+                        </td>
                         <td>{post.author}</td>
                         <td>{post.date}</td>
                         <td>{post.views}</td>

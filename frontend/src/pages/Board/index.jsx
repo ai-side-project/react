@@ -54,6 +54,7 @@ const dummyPosts = [
 const Board = () => {
   const [selectedCategory, setSelectedCategory] = useState("자유게시판");
   const [searchType, setSearchType] = useState("title");
+  const [inputKeyword, setInputKeyword] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -88,10 +89,12 @@ const Board = () => {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setCurrentPage(1);
+    setInputKeyword("");
     setSearchKeyword("");
   };
 
   const handleSearch = () => {
+    setSearchKeyword(inputKeyword);
     setCurrentPage(1);
   };
 
@@ -185,8 +188,8 @@ const Board = () => {
                     type="text"
                     className="board-search-input"
                     placeholder="검색어를 입력하세요"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    value={inputKeyword}
+                    onChange={(e) => setInputKeyword(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleSearch();
                     }}

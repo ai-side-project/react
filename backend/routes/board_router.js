@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
       SELECT p.*, u.nickname 
       FROM posts p 
       JOIN users u ON p.user_id = u.id 
-      ORDER BY p.createdAt DESC
+      ORDER BY p.created_at DESC
     `
     const [posts] = await pool.query(sql)
 

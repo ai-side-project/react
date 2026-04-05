@@ -1,4 +1,7 @@
 -- 1. DB 생성 및 선택
+SET NAMES 'utf8mb4';
+SET CHARACTER SET utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS side_project CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE side_project;
 
@@ -23,7 +26,7 @@ CREATE TABLE boards (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     slug VARCHAR(20) UNIQUE NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5. 게시물 테이블
 CREATE TABLE posts (

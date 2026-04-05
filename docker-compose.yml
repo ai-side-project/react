@@ -4,6 +4,9 @@ services:
   # 1. MySQL 데이터베이스 서비스
   db:
     image: mysql:8.0
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     container_name: project_mysql
     restart: always
     environment:

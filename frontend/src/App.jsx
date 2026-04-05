@@ -11,7 +11,7 @@ import Home from "./pages/Home";
 import Review from "./pages/Review";
 import Loading from "./components/Loading";
 import Join from "./components/auth/Join";
-import Detail from "./pages/Board/Detail";
+import Detail from "./pages/Board/detail";
 
 // 1. 스타일드 컴포넌트 및 전역 스타일 임포트
 import GlobalStyle from "./styles/Globalstyle";
@@ -59,7 +59,7 @@ function App() {
           <Route path="/board" element={<Board />} />
           <Route path="/home" element={<Home />} />
           <Route path="/review" element={<Review />} />
-          <Route path="/board/detail" element={<Detail />} />
+          <Route path="/board/:id" element={<Detail />} />
         </Routes>
       </MainContent>
 

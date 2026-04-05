@@ -14,42 +14,6 @@ const dummyPosts = [
     likes: 7,
     category: "자유게시판",
   },
-  {
-    id: 2,
-    title: "하이닉스 단기 반등 가능성 어떻게 보시나요?",
-    author: "mango",
-    date: "2026.03.31",
-    views: 96,
-    likes: 4,
-    category: "자유게시판",
-  },
-  {
-    id: 3,
-    title: "카카오 실적 발표 이후 방향성 의견 부탁드립니다",
-    author: "berry",
-    date: "2026.03.30",
-    views: 142,
-    likes: 5,
-    category: "자유게시판",
-  },
-  {
-    id: 4,
-    title: "AI 예측 결과와 실제 차트 비교해봤습니다",
-    author: "orange",
-    date: "2026.03.30",
-    views: 211,
-    likes: 11,
-    category: "자유게시판",
-  },
-  {
-    id: 5,
-    title: "자유게시판 테스트 글입니다",
-    author: "melon",
-    date: "2026.03.29",
-    views: 52,
-    likes: 1,
-    category: "자유게시판",
-  },
 ];
 
 const Board = () => {

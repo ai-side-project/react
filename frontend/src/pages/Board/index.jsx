@@ -48,7 +48,7 @@ const Board = () => {
             <tr key={post.id}>
               <td>{post.id}</td>
               <td>{post.title}</td>
-              <td>{post.nickname}</td> {/* JOIN으로 가져온 닉네임 */}
+              <td>{post.nickname}</td>
               <td>{new Date(post.created_at).toLocaleDateString()}</td>
             </tr>
           ))}

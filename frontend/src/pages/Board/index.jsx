@@ -1,35 +1,35 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "./board.css";
-import axios from "axios";
+import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import "./board.css"
+import axios from "axios"
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 
 const instance = axios.create({
   withCredentials: true,
-});
+})
 
 const Board = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await instance.get(`${API_URL}/posts`);
-        setPosts(response.data);
+        const response = await instance.get(`${API_URL}/posts`)
+        setPosts(response.data)
       } catch (err) {
-        console.error("게시글 로딩 실패:", err);
+        console.error("게시글 로딩 실패:", err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchPosts();
-  }, []);
+    fetchPosts()
+  }, [])
 
   if (loading) {
-    return <div className="board-loading">로딩 중...</div>;
+    return <div className="board-loading">로딩 중...</div>
   }
 
   return (
@@ -95,7 +95,7 @@ const Board = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Board;
+export default Board

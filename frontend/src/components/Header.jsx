@@ -44,7 +44,7 @@ function Header() {
       <div className="container header-content">
         <div className="header-left">
           <Link to="/" className="logo-text">
-            AI 주식 분석 플랫폼
+            서울여행 플래너 AI
           </Link>
           <Navigation />
         </div>

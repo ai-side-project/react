@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
 // 1. 푸터 전용 스타일 정의
 const FooterContainer = styled.footer`
@@ -9,7 +9,7 @@ const FooterContainer = styled.footer`
   color: var(--muted);
   font-size: 12px;
   margin-top: auto; /* 푸터를 항상 바닥으로 밀어냄 */
-`
+`;
 
 const FooterInner = styled.div`
   /* 기존 .container 스타일이 전역에 없다면 여기서 정의 */
@@ -26,7 +26,7 @@ const FooterInner = styled.div`
     gap: 16px;
     text-align: center;
   }
-`
+`;
 
 function Footer() {
   return (
@@ -36,16 +36,16 @@ function Footer() {
           <strong
             style={{ display: "block", marginBottom: "4px", color: "#333" }}
           >
-            AI 기반 주식 분석 및 예측 플랫폼
+            서울여행 플래너 AI
           </strong>
           <p style={{ margin: 0 }}>
-            머신러닝 기반 주가 예측 프로젝트 포트폴리오
+            서울의 숨은 명소와 문화재를 추천하는 맞춤형 여행 플랫폼
           </p>
           <span>© 2026 side project No.1</span>
         </div>
       </FooterInner>
     </FooterContainer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

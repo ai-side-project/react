@@ -31,7 +31,7 @@
   line-height: 1.1;
   white-space: nowrap;
   flex-shrink: 0;
-  color: #3b82f6; /* 브랜드 색상 */
+  color: var(--primary); /* 브랜드 색상 */
   text-decoration: none;
 }
 
@@ -57,19 +57,19 @@
   width: 140px;
   height: 38px;
   padding: 0 12px;
-  border: 1px solid #d8e1ee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   outline: none;
-  background: #eef4ff; /* 입력칸 배경 */
+  background: #f7fbff; /* 입력칸 배경 */
   min-width: 0;
-  color: #111827;
+  color: var(--text);
   font-weight: 600;
 }
 
 .auth-form input:focus {
-  border-color: #9ecbff;
-  background: #f7fbff;
-  box-shadow: 0 0 0 4px rgba(63, 151, 255, 0.12);
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--primary-weak);
 }
 
 .auth-form .nickInput {
@@ -93,12 +93,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 38px;
-  padding: 0 16px;
+  height: 36px;
+  padding: 0 14px;
   border-radius: 10px;
-  background-color: #4f46e5;
-  color: #ffffff;
-  border: 1px solid #4f46e5;
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border: 1px solid var(--primary);
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
@@ -110,10 +110,10 @@
 .auth-form button:hover,
 .btn-logout:hover,
 .authSelector:hover {
-  background-color: #4338ca;
-  border-color: #4338ca;
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 4px 12px rgba(103, 137, 202, 0.14);
   color: #ffffff;
 }
 
@@ -145,7 +145,7 @@
 .welcome-text {
   font-size: 14px;
   font-weight: 700;
-  color: #374151;
+  color: var(--text);
   white-space: nowrap;
 }
 
@@ -179,7 +179,7 @@
   height: 38px;
   padding: 0 14px;
   border-radius: 12px;
-  color: #4b5563;
+  color: var(--text);
   font-size: 15px;
   font-weight: 700; /* 폰트 진하게 */
   text-decoration: none;
@@ -187,16 +187,16 @@
   transition: all 0.2s ease;
 }
 
-/* 메뉴 hover - 카키 제거, 연한 파란색 */
+/* 메뉴 hover - 카키 제거, 서울하늘색 */
 .MainNav ul li a:hover {
   background: #eef5ff;
-  color: #2f89f2;
+  color: var(--primary);
 }
 
 /* 활성 메뉴 */
 .MainNav ul li a.check {
-  background: #eef5ff;
-  color: #2f89f2;
+  background: rgba(103, 137, 202, 0.16);
+  color: var(--primary);
   font-weight: 800;
 }
 

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./intro.css";
 
 const featureItems = [
@@ -66,6 +67,11 @@ const Intro = () => {
               <br />
               맞춤형 여행 일정을 추천하는 서비스입니다.
             </p>
+            <div className="hero-actions">
+              <Link to="/home" className="hero-btn hero-btn-primary">
+                홈으로 가기
+              </Link>
+            </div>
           </div>
 
           <div className="hero-preview-card course-preview-card">

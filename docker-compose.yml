@@ -39,7 +39,8 @@ services:
     ports:
       - "5000:5000" # 백엔드 사용 포트에 맞게 수정 (예: 3000, 8080 등)
     depends_on:
-      - db # DB가 먼저 켜진 후 백엔드가 켜지도록 설정
+      db:
+        condition: service_healthy
     env_file:
       - ./backend/.env # 백엔드의 환경변수 파일 연동
     volumes:

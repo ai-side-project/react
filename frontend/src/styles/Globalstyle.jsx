@@ -1,27 +1,36 @@
-import { createGlobalStyle, keyframes } from "styled-components"
+import { createGlobalStyle, keyframes } from "styled-components";
 
 // 로딩 애니메이션 정의
 const spin = keyframes`
   0% { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(360deg); }
-`
+`;
 
 const GlobalStyle = createGlobalStyle`
   :root {
     --container-w: 1400px;
-    --bg: #f6f8fc;
+
+    --bg: #f1f4f9;
     --card: #ffffff;
-    --border: #e5e7eb;
-    --muted: #6b7280;
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --primary-weak: rgba(79, 70, 229, 0.12);
+    --border: #e3e8f0;
+
+    --text: #504e49;
+    --muted: #747f90;
+
+    --primary: #6789ca;
+    --primary-hover: #5678b9;
+    --primary-weak: rgba(103, 137, 202, 0.14);
     --on-primary: #ffffff;
-    --danger: #ef4444;
-    --danger-weak: rgba(239, 68, 68, 0.1);
-    --danger-border: rgba(239, 68, 68, 0.3);
-    --danger-text: #b91c1c;
-    --shadow: 0 10px 28px rgba(17, 24, 39, 0.08);
+
+    --accent: #e5b560;
+    --accent-weak: #f6e7c7;
+
+    --danger: #c24b5a;
+    --danger-weak: rgba(194, 75, 90, 0.12);
+    --danger-border: rgba(194, 75, 90, 0.28);
+    --danger-text: #941e34;
+
+    --shadow: 0 10px 28px rgba(80, 78, 73, 0.08);
     --radius: 14px;
   }
 
@@ -29,7 +38,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     background: var(--bg);
-    color: #111827;
+    color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
@@ -70,6 +79,6 @@ const GlobalStyle = createGlobalStyle`
     border-bottom: 15px solid transparent;
     animation: ${spin} 2s linear infinite;
   }
-`
+`;
 
-export default GlobalStyle
+export default GlobalStyle;

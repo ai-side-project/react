@@ -34,7 +34,11 @@ function Footer() {
       <FooterInner>
         <div>
           <strong
-            style={{ display: "block", marginBottom: "4px", color: "#333" }}
+            style={{
+              display: "block",
+              marginBottom: "4px",
+              color: "var(--text)",
+            }}
           >
             서울여행 플래너 AI
           </strong>

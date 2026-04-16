@@ -11,6 +11,7 @@ const uploadRouter = require("./routes/upload_router")
 const introRouter = require("./routes/intro_router")
 const homeRouter = require("./routes/home_router")
 const reviewRouter = require("./routes/reveiw_router")
+const chatRouter = require("./routes/chatbot_router")
 const passportConfig = require("./passport")
 const { RedisStore } = require("connect-redis")
 //const { createClient } = require("redis")
@@ -96,6 +97,9 @@ app.use("/api/upload", uploadRouter)
 app.use("/api/intro", introRouter)
 app.use("/api/home", homeRouter)
 app.use("/api/review", reviewRouter)
+
+//챗봇 라우터 연결
+app.use("/api/chatbot", chatRouter)
 // 기본 라우트
 app.get("/api", (req, res) => {
   res.send("🚀 /api간단 게시판 API 서버 실행 중")

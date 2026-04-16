@@ -1,0 +1,154 @@
+/* 전체 컨테이너: 왼쪽 아래 고정 */
+.chatbot-wrapper {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* 채팅창 본체 */
+.chat-window {
+  width: 350px;
+  height: 570px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 헤더 */
+.chat-header {
+  padding: 15px;
+  background-color: #4a90e2;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 헤더 아래 그림자 추가 */
+  z-index: 10;
+}
+
+/* ★★★ 메시지 영역 (여기가 핵심 변경됨) ★★★ */
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #f1f3f5; /* 배경색을 연한 회색으로 변경해 말풍선 강조 */
+
+  /* Flexbox 설정: 메시지를 위에서 아래로 쌓음 */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 말풍선 사이 간격 */
+}
+
+/* ★★★ 말풍선 공통 스타일 ★★★ */
+.msg-bubble {
+  max-width: 75%; /* 말풍선이 너무 길어지지 않게 제한 */
+  padding: 10px 14px;
+  border-radius: 15px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word; /* 긴 단어 줄바꿈 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* 유저(나)의 말풍선: 오른쪽 배치, 파란색 */
+.msg-bubble.user {
+  align-self: flex-end; /* 오른쪽 정렬 */
+  background-color: #4a90e2;
+  color: white;
+  border-bottom-right-radius: 2px; /* 말꼬리 효과 */
+}
+
+/* 챗봇(상대)의 말풍선: 왼쪽 배치, 흰색/회색 */
+.msg-bubble.assistant {
+  align-self: flex-start; /* 왼쪽 정렬 */
+  background-color: white;
+  color: #333;
+  border: 1px solid #e9ecef;
+  border-bottom-left-radius: 2px; /* 말꼬리 효과 */
+}
+
+/* 입력창 영역 */
+.chat-input-area {
+  padding: 10px;
+  background-color: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 8px; /* 입력창과 버튼 사이 간격 */
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px; /* 둥근 입력창 */
+  outline: none;
+  background-color: #f8f9fa;
+  transition: all 0.2s;
+}
+
+.chat-input-area input:focus {
+  background-color: white;
+  border-color: #4a90e2;
+}
+
+.send-btn {
+  padding: 8px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 20px; /* 버튼도 둥글게 */
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.send-btn:hover {
+  background-color: #357abd;
+}
+
+.send-btn:disabled {
+  background-color: #aecdf0;
+  cursor: not-allowed;
+}
+
+/* 토글 버튼 */
+.chat-toggle-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.chat-toggle-btn:hover {
+  transform: scale(1.1);
+}

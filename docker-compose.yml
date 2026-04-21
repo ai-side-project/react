@@ -46,3 +46,5 @@ services:
     volumes:
       - ./backend:/app # ✨ 내 컴퓨터의 백엔드 폴더를 도커 안의 /app 폴더와 실시간 연결
       - /app/node_modules # ✨ 도커 안에서 설치한 모듈은 덮어쓰지 않도록 보호
+      # 내 컴퓨터의 ./backend/uploads 폴더를 도커 컨테이너 내부와 연결합니다.
+      - ./backend/uploads:/app/uploads

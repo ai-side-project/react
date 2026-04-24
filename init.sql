@@ -70,12 +70,13 @@ CREATE TABLE places (
     road_address VARCHAR(255),
     latitude DECIMAL(10, 8),
     longitude DECIMAL(11, 8),
-    phone VARCHAR(20),
+    telephone VARCHAR(100),
     website VARCHAR(255),
     opening_hours VARCHAR(255),
     operating_days VARCHAR(100),
     closed_days VARCHAR(100),
-    traffic_info TEXT,
+    traffic_info_subway TEXT,
+    traffic_info_bus TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -97,7 +98,7 @@ CREATE TABLE categories (
     name VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO categories (name) VALUES 
+INSERT INTO categories (name) VALUES
 ('공원·자연'),
 ('문화유산·역사'),
 ('전시·박물관'),

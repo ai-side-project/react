@@ -98,7 +98,7 @@ CREATE TABLE categories (
     name VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO categories (name) VALUES 
+INSERT INTO categories (name) VALUES
 ('공원·자연'),
 ('문화유산·역사'),
 ('전시·박물관'),

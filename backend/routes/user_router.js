@@ -17,6 +17,7 @@ router.get("/me", (req, res) => {
         id: req.user.id,
         nickname: req.user.nickname,
         email: req.user.email,
+        isadmin: req.user.is_admin,
       },
     })
   }
@@ -93,6 +94,7 @@ router.post("/login", (req, res, next) => {
             id: user.id,
             nickname: user.nickname,
             email: user.email,
+            isadmin: user.is_admin,
           },
         })
       })

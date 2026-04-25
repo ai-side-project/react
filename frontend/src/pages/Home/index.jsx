@@ -10,6 +10,8 @@ const CATEGORIES = [
   "체험·놀이",
 ];
 
+const IMAGE_BASE_URL = "http://localhost:5000/img";
+
 const Home = () => {
   const [keyword, setKeyword] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
@@ -201,6 +203,13 @@ const Home = () => {
             <div className="results-grid">
               {results.map((place) => (
                 <article key={place.id} className="place-card">
+                  {place.main_image_url ? (
+                    <img
+                      src={`${IMAGE_BASE_URL}/${place.main_image_url}`}
+                      alt={place.name}
+                      className="place-image"
+                    />
+                  ) : null}
                   <div className="place-content">
                     <h3>{place.name}</h3>
                     <p>{place.road_address || place.address}</p>

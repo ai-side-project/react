@@ -99,7 +99,7 @@ const Chatbot = () => {
     <div className="chatbot-wrapper">
       {isOpen && (
         <div className="chat-window">
-          <div className="chat-header">TRIPY AI 상담원</div>
+          <div className="chat-header">서울여행 플래너 AI 상담원</div>
 
           <div className="chat-messages">
             {/* 5. 배열 데이터를 순회하며 화면에 출력 */}

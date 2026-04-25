@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react"
-import { Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
@@ -10,6 +10,7 @@ import Board from "./pages/Board"
 import Intro from "./pages/Intro"
 import Home from "./pages/Home"
 import Review from "./pages/Review"
+import Admin from "./pages/Admin"
 import Loading from "./components/Loading"
 import Join from "./components/auth/Join"
 import Detail from "./pages/Board/detail"
@@ -29,7 +30,7 @@ const LoadingWrapper = styled.div`
 `
 
 function App() {
-  const { user, isChecking, checkAuth } = useAuthStore()
+  const { user, isChecking, checkAuth, isadmin } = useAuthStore()
 
   useEffect(() => {
     checkAuth()
@@ -62,6 +63,10 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/review" element={<Review />} />
           <Route path="/board/:id" element={<Detail />} />
+          <Route
+            path="/admin"
+            element={user?.isadmin ? <Admin /> : <Navigate to="/" replace />}
+          />
         </Routes>
       </MainContent>
       <Chatbot />

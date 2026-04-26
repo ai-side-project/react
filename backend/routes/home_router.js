@@ -1,28 +1,28 @@
-const express = require("express");
-const pool = require("../db/db"); // ★ db.js (커넥션 풀) 불러오기
-const router = express.Router();
+const express = require("express")
+const pool = require("../db/db") // ★ db.js (커넥션 풀) 불러오기
+const router = express.Router()
 
 // ==================== 인증 미들웨어 ====================
 // 로그인 여부 확인 함수
 function requireAuth(req, res, next) {
   if (req.isAuthenticated()) {
-    return next();
+    return next()
   }
-  return res.status(401).json({ error: "로그인이 필요합니다." });
+  return res.status(401).json({ error: "로그인이 필요합니다." })
 }
 router.get("/", async (req, res) => {
-  res.json({ message: "home api" });
-});
+  res.json({ message: "home api" })
+})
 
 router.get("/search", async (req, res) => {
-  const keyword = req.query.keyword || "";
+  const keyword = req.query.keyword || ""
 
   if (!keyword.trim()) {
-    return res.json([]);
+    return res.json([])
   }
 
   try {
-    const searchKeyword = `%${keyword.trim()}%`;
+    const searchKeyword = `%${keyword.trim()}%`
 
     const [rows] = await pool.query(
       `
@@ -53,20 +53,20 @@ router.get("/search", async (req, res) => {
       ORDER BY p.id DESC
       `,
       [searchKeyword, searchKeyword, searchKeyword, searchKeyword],
-    );
+    )
 
-    res.json(rows);
+    res.json(rows)
   } catch (error) {
-    console.error("홈 장소 검색 오류:", error);
-    res.status(500).json({ message: "장소 검색 중 오류가 발생했습니다." });
+    console.error("홈 장소 검색 오류:", error)
+    res.status(500).json({ message: "장소 검색 중 오류가 발생했습니다." })
   }
-});
+})
 
 router.get("/category", async (req, res) => {
-  const category = req.query.category || "";
+  const category = req.query.category || ""
 
   if (!category.trim()) {
-    return res.json([]);
+    return res.json([])
   }
 
   try {
@@ -86,7 +86,7 @@ router.get("/category", async (req, res) => {
         p.operating_days,
         p.closed_days,
         p.traffic_info_subway,
-        p.traffic_info_bus
+        p.traffic_info_bus,
         pi.image_url AS main_image_url
       FROM places p
       JOIN place_category_mapping pcm
@@ -100,13 +100,13 @@ router.get("/category", async (req, res) => {
       ORDER BY p.id DESC
       `,
       [category.trim()],
-    );
+    )
 
-    res.json(rows);
+    res.json(rows)
   } catch (error) {
-    console.error("홈 카테고리 검색 오류:", error);
-    res.status(500).json({ message: "카테고리 검색 중 오류가 발생했습니다." });
+    console.error("홈 카테고리 검색 오류:", error)
+    res.status(500).json({ message: "카테고리 검색 중 오류가 발생했습니다." })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

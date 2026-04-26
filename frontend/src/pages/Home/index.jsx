@@ -203,13 +203,16 @@ const Home = () => {
             <div className="results-grid">
               {results.map((place) => (
                 <article key={place.id} className="place-card">
-                  {place.main_image_url ? (
-                    <img
-                      src={`${IMAGE_BASE_URL}/${place.main_image_url}`}
-                      alt={place.name}
-                      className="place-image"
-                    />
-                  ) : null}
+                  <img
+                    src={
+                      place.main_image_url
+                        ? `${IMAGE_BASE_URL}/${place.main_image_url}`
+                        : "/images/default-place-image.png"
+                    }
+                    alt={place.name}
+                    className="place-image"
+                  />
+
                   <div className="place-content">
                     <h3>{place.name}</h3>
                     <p>{place.road_address || place.address}</p>

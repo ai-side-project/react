@@ -86,7 +86,7 @@ router.get("/category", async (req, res) => {
         p.operating_days,
         p.closed_days,
         p.traffic_info_subway,
-        p.traffic_info_bus
+        p.traffic_info_bus,
         pi.image_url AS main_image_url
       FROM places p
       JOIN place_category_mapping pcm

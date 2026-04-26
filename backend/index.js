@@ -98,7 +98,7 @@ app.use("/api/upload", uploadRouter)
 app.use("/api/intro", introRouter)
 app.use("/api/home", homeRouter)
 app.use("/api/review", reviewRouter)
-
+app.use("/api/admin", adminRouter)
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter)
 // 기본 라우트

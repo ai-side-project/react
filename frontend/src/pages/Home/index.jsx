@@ -18,6 +18,9 @@ const Home = () => {
   const [results, setResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchMode, setSearchMode] = useState("");
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleKeywordSearch = async () => {
     const trimmedKeyword = keyword.trim();
@@ -73,6 +76,32 @@ const Home = () => {
       console.error("카테고리 검색 실패:", error);
       setResults([]);
     }
+  };
+
+  const handlePlaceClick = async (placeId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/home/places/${placeId}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("장소 상세 조회 실패");
+      }
+
+      const data = await response.json();
+
+      setSelectedImages(data.images);
+      setIsModalOpen(true);
+      setSelectedPlace(data.place);
+    } catch (error) {
+      console.error("장소 상세 조회 실패:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPlace(null);
+    setSelectedImages([]);
   };
 
   const handleReset = () => {
@@ -202,7 +231,11 @@ const Home = () => {
           {hasSearched && results.length > 0 ? (
             <div className="results-grid">
               {results.map((place) => (
-                <article key={place.id} className="place-card">
+                <article
+                  key={place.id}
+                  className="place-card"
+                  onClick={() => handlePlaceClick(place.id)}
+                >
                   <img
                     src={
                       place.main_image_url
@@ -229,6 +262,110 @@ const Home = () => {
             </div>
           ) : null}
         </section>
+        {isModalOpen && selectedPlace ? (
+          <div className="place-modal-backdrop" onClick={handleCloseModal}>
+            <div
+              className="place-modal"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                className="place-modal-close"
+                onClick={handleCloseModal}
+              >
+                ×
+              </button>
+
+              <div className="place-modal-images">
+                {selectedImages.length > 0 ? (
+                  selectedImages.map((image) => (
+                    <img
+                      key={image.id}
+                      src={`${IMAGE_BASE_URL}/${image.image_url}`}
+                      alt={selectedPlace.name}
+                      className="place-modal-image"
+                    />
+                  ))
+                ) : (
+                  <img
+                    src="/images/default-place-image.png"
+                    alt="이미지 준비중"
+                    className="place-modal-image"
+                  />
+                )}
+              </div>
+
+              <div className="place-modal-content">
+                <h2>{selectedPlace.name}</h2>
+
+                {selectedPlace.description ? (
+                  <p className="place-modal-description">
+                    {selectedPlace.description}
+                  </p>
+                ) : null}
+
+                <dl className="place-detail-list">
+                  <div>
+                    <dt>주소</dt>
+                    <dd>{selectedPlace.address || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>신주소</dt>
+                    <dd>{selectedPlace.road_address || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>전화번호</dt>
+                    <dd>{selectedPlace.telephone || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>웹사이트</dt>
+                    <dd>
+                      {selectedPlace.website ? (
+                        <a
+                          href={selectedPlace.website}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          바로가기
+                        </a>
+                      ) : (
+                        "-"
+                      )}
+                    </dd>
+                  </div>
+
+                  <div>
+                    <dt>운영시간</dt>
+                    <dd>{selectedPlace.opening_hours || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>운영요일</dt>
+                    <dd>{selectedPlace.operating_days || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>휴무일</dt>
+                    <dd>{selectedPlace.closed_days || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>지하철</dt>
+                    <dd>{selectedPlace.traffic_info_subway || "-"}</dd>
+                  </div>
+
+                  <div>
+                    <dt>버스</dt>
+                    <dd>{selectedPlace.traffic_info_bus || "-"}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </section>
   );

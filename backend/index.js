@@ -12,6 +12,7 @@ const introRouter = require("./routes/intro_router")
 const homeRouter = require("./routes/home_router")
 const reviewRouter = require("./routes/reveiw_router")
 const chatRouter = require("./routes/chatbot_router")
+const adminRouter = require("./routes/admin_router")
 const passportConfig = require("./passport")
 const { RedisStore } = require("connect-redis")
 //const { createClient } = require("redis")
@@ -97,7 +98,7 @@ app.use("/api/upload", uploadRouter)
 app.use("/api/intro", introRouter)
 app.use("/api/home", homeRouter)
 app.use("/api/review", reviewRouter)
-
+app.use("/api/admin", adminRouter)
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter)
 // 기본 라우트

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./home.css";
 
 const CATEGORIES = [
@@ -8,6 +8,7 @@ const CATEGORIES = [
   "문화공간·복합공간",
   "전망·랜드마크",
   "체험·놀이",
+  "야경",
 ];
 
 const IMAGE_BASE_URL = "http://localhost:5000/img";
@@ -21,6 +22,13 @@ const Home = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 6;
+
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentResults = results.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleKeywordSearch = async () => {
     const trimmedKeyword = keyword.trim();
@@ -28,6 +36,7 @@ const Home = () => {
     setActiveCategory("");
     setSearchMode("keyword");
     setHasSearched(true);
+    setCurrentPage(1);
 
     if (!trimmedKeyword) {
       setResults([]);
@@ -58,6 +67,7 @@ const Home = () => {
     setActiveCategory(category);
     setSearchMode("category");
     setHasSearched(true);
+    setCurrentPage(1);
 
     try {
       const response = await fetch(
@@ -110,6 +120,7 @@ const Home = () => {
     setResults([]);
     setHasSearched(false);
     setSearchMode("");
+    setCurrentPage(1);
   };
 
   const handleKeywordKeyDown = (event) => {
@@ -229,37 +240,78 @@ const Home = () => {
           ) : null}
 
           {hasSearched && results.length > 0 ? (
-            <div className="results-grid">
-              {results.map((place) => (
-                <article
-                  key={place.id}
-                  className="place-card"
-                  onClick={() => handlePlaceClick(place.id)}
-                >
-                  <img
-                    src={
-                      place.main_image_url
-                        ? `${IMAGE_BASE_URL}/${place.main_image_url}`
-                        : "/images/default-place-image.png"
-                    }
-                    alt={place.name}
-                    className="place-image"
-                  />
+            <>
+              <div className="results-grid">
+                {currentResults.map((place) => (
+                  <article
+                    key={place.id}
+                    className="place-card"
+                    onClick={() => handlePlaceClick(place.id)}
+                  >
+                    <img
+                      src={
+                        place.main_image_url
+                          ? `${IMAGE_BASE_URL}/${place.main_image_url}`
+                          : "/images/default-place-image.png"
+                      }
+                      alt={place.name}
+                      className="place-image"
+                    />
 
-                  <div className="place-content">
-                    <h3>{place.name}</h3>
-                    <p>{place.road_address || place.address}</p>
-                    <p>{place.description}</p>
-                    {place.opening_hours ? (
-                      <p>운영시간: {place.opening_hours}</p>
-                    ) : null}
-                    {place.telephone ? (
-                      <p>전화번호: {place.telephone}</p>
-                    ) : null}
-                  </div>
-                </article>
-              ))}
-            </div>
+                    <div className="place-content">
+                      <h3>{place.name}</h3>
+                      <p className="place-address">
+                        {place.road_address || place.address}
+                      </p>
+                      <p className="place-description">{place.description}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              {totalPages > 1 ? (
+                <div className="pagination">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    이전
+                  </button>
+
+                  {Array.from(
+                    { length: Math.min(10, totalPages) },
+                    (_, index) => {
+                      const pageGroup = Math.floor((currentPage - 1) / 10);
+                      const pageNumber = pageGroup * 10 + index + 1;
+
+                      if (pageNumber > totalPages) {
+                        return null;
+                      }
+
+                      return (
+                        <button
+                          key={pageNumber}
+                          type="button"
+                          onClick={() => setCurrentPage(pageNumber)}
+                          className={currentPage === pageNumber ? "active" : ""}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    },
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    다음
+                  </button>
+                </div>
+              ) : null}
+            </>
           ) : null}
         </section>
         {isModalOpen && selectedPlace ? (

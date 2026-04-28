@@ -74,7 +74,7 @@ const UserManager = () => {
               {users.map((user) => (
                 <tr key={user.id}>
                   <td>{user.id}</td>
-                  <td className="username">{user.username}</td>
+                  <td className="nickname">{user.nickname}</td>
                   <td>{user.email}</td>
                   <td>{new Date(user.created_at).toLocaleDateString()}</td>
                   <td>

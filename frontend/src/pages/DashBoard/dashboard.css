@@ -135,8 +135,14 @@
   flex-direction: column;
   gap: 4px;
   margin: 8px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5eaf2;
   color: var(--muted);
   font-size: 14px;
+}
+
+.saved-place-list li:last-child {
+  border-bottom: none;
 }
 
 .saved-place-list strong {

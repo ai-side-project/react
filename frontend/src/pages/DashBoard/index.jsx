@@ -214,9 +214,10 @@ const Dashboard = () => {
                     <div>
                       <h3>{schedule.schedule_title}</h3>
                       <p>
-                        {schedule.start_date} ·{" "}
-                        {schedule.places?.[0]?.visit_time || "시간 미정"} · 장소{" "}
-                        {schedule.places?.length || 0}개
+                        {schedule.start_date?.slice(0, 10)} ·{" "}
+                        {schedule.places?.[0]?.visit_time?.slice(0, 5) ||
+                          "시간 미정"}{" "}
+                        · 장소 {schedule.places?.length || 0}개
                       </p>
 
                       {schedule.places?.[0]?.memo ? (

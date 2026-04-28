@@ -256,38 +256,6 @@ router.get("/:scheduleId", async (req, res) => {
   }
 });
 
-// 일정 삭제
-router.delete("/:scheduleId", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
-  const { scheduleId } = req.params;
-
-  try {
-    const [result] = await pool.query(
-      `
-      DELETE FROM schedules
-      WHERE id = ? AND user_id = ?
-      `,
-      [scheduleId, userId],
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        message: "삭제할 일정을 찾을 수 없습니다.",
-      });
-    }
-
-    res.json({
-      message: "일정이 삭제되었습니다.",
-    });
-  } catch (error) {
-    console.error("일정 삭제 실패:", error);
-
-    res.status(500).json({
-      message: "일정 삭제 실패",
-    });
-  }
-});
-
 // 일정 수정
 router.put("/:scheduleId", async (req, res) => {
   const userId = req.user?.id || req.session?.user?.id || 1;
@@ -343,6 +311,38 @@ router.put("/:scheduleId", async (req, res) => {
     if (connection) {
       connection.release();
     }
+  }
+});
+
+// 일정 삭제
+router.delete("/:scheduleId", async (req, res) => {
+  const userId = req.user?.id || req.session?.user?.id || 1;
+  const { scheduleId } = req.params;
+
+  try {
+    const [result] = await pool.query(
+      `
+      DELETE FROM schedules
+      WHERE id = ? AND user_id = ?
+      `,
+      [scheduleId, userId],
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "삭제할 일정을 찾을 수 없습니다.",
+      });
+    }
+
+    res.json({
+      message: "일정이 삭제되었습니다.",
+    });
+  } catch (error) {
+    console.error("일정 삭제 실패:", error);
+
+    res.status(500).json({
+      message: "일정 삭제 실패",
+    });
   }
 });
 

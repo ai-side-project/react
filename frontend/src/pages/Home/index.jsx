@@ -23,6 +23,7 @@ const Home = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [favoriteIds, setFavoriteIds] = useState([]);
 
   const ITEMS_PER_PAGE = 6;
 
@@ -129,6 +130,54 @@ const Home = () => {
     }
   };
 
+  const fetchFavorites = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/favorites", {
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("즐겨찾기 목록 조회 실패");
+      }
+
+      const data = await response.json();
+      setFavoriteIds(data.map((place) => place.id));
+    } catch (error) {
+      console.error("즐겨찾기 목록 조회 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  const handleToggleFavorite = async (place) => {
+    const isFavorite = favoriteIds.includes(place.id);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/favorites/${place.id}`,
+        {
+          method: isFavorite ? "DELETE" : "POST",
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("즐겨찾기 처리 실패");
+      }
+
+      if (isFavorite) {
+        setFavoriteIds((prev) => prev.filter((id) => id !== place.id));
+      } else {
+        setFavoriteIds((prev) => [...prev, place.id]);
+      }
+    } catch (error) {
+      console.error("즐겨찾기 처리 실패:", error);
+      alert("즐겨찾기 처리 중 문제가 발생했습니다.");
+    }
+  };
+
   const renderStatusText = () => {
     if (!hasSearched) {
       return "장소명을 입력하거나 아래 카테고리를 선택해 여행지를 찾아보세요.";
@@ -159,7 +208,6 @@ const Home = () => {
             </p>
           </div>
         </div>
-
         <section className="search-panel">
           <div className="search-box">
             <label className="search-label" htmlFor="place-search-input">
@@ -248,15 +296,29 @@ const Home = () => {
                     className="place-card"
                     onClick={() => handlePlaceClick(place.id)}
                   >
-                    <img
-                      src={
-                        place.main_image_url
-                          ? `${IMAGE_BASE_URL}/${place.main_image_url}`
-                          : "/images/default-place-image.png"
-                      }
-                      alt={place.name}
-                      className="place-image"
-                    />
+                    <div className="place-image-wrap">
+                      <img
+                        src={
+                          place.main_image_url
+                            ? `${IMAGE_BASE_URL}/${place.main_image_url}`
+                            : "/images/default-place-image.png"
+                        }
+                        alt={place.name}
+                        className="place-image"
+                      />
+                      <button
+                        type="button"
+                        className={`favorite-button ${
+                          favoriteIds.includes(place.id) ? "active" : ""
+                        }`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleToggleFavorite(place);
+                        }}
+                      >
+                        {favoriteIds.includes(place.id) ? "♥" : "♡"}
+                      </button>
+                    </div>
 
                     <div className="place-content">
                       <h3>{place.name}</h3>

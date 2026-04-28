@@ -1,24 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { useEffect } from "react"
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { useAuthStore } from "./store/authStore"
-import Header from "./components/Header"
-import Footer from "./components/Footer"
-import Chatbot from "./components/Chatbot"
-import DashBoard from "./pages/DashBoard"
-import Board from "./pages/Board"
-import Intro from "./pages/Intro"
-import Home from "./pages/Home"
-import Review from "./pages/Review"
-import Admin from "./pages/Admin"
-import Loading from "./components/Loading"
-import Join from "./components/auth/Join"
-import Detail from "./pages/Board/detail"
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuthStore } from "./store/authStore";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Chatbot from "./components/Chatbot";
+import DashBoard from "./pages/DashBoard";
+import Board from "./pages/Board";
+import Intro from "./pages/Intro";
+import Home from "./pages/Home";
+import Review from "./pages/Review";
+import Admin from "./pages/Admin";
+import Loading from "./components/Loading";
+import Join from "./components/auth/Join";
+import Detail from "./pages/Board/detail";
+import Schedule from "./pages/Schedule";
+import Dashboard from "./pages/Dashboard";
 
 // 1. 스타일드 컴포넌트 및 전역 스타일 임포트
-import GlobalStyle from "./styles/Globalstyle"
-import { AppWrapper, MainContent } from "./styles/Layout.styles"
-import styled from "styled-components"
+import GlobalStyle from "./styles/Globalstyle";
+import { AppWrapper, MainContent } from "./styles/Layout.styles";
+import styled from "styled-components";
 
 // 2. 로딩 화면 전용 스타일 (임시 인라인 대신 사용)
 const LoadingWrapper = styled.div`
@@ -27,14 +29,14 @@ const LoadingWrapper = styled.div`
   align-items: center;
   height: 100vh;
   opacity: 0.2; /* 기존 opcity 오타 수정 */
-`
+`;
 
 function App() {
-  const { user, isChecking, checkAuth, isadmin } = useAuthStore()
+  const { user, isChecking, checkAuth, isadmin } = useAuthStore();
 
   useEffect(() => {
-    checkAuth()
-  }, [])
+    checkAuth();
+  }, []);
 
   if (isChecking) {
     return (
@@ -42,7 +44,7 @@ function App() {
         <GlobalStyle /> {/* 로딩 중에도 전역 배경색 등을 유지하기 위해 추가 */}
         <Loading />
       </LoadingWrapper>
-    )
+    );
   }
 
   return (
@@ -61,6 +63,8 @@ function App() {
           <Route path="/dash" element={<DashBoard />} />
           <Route path="/board" element={<Board />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/review" element={<Review />} />
           <Route path="/board/:id" element={<Detail />} />
           <Route
@@ -72,7 +76,7 @@ function App() {
       <Chatbot />
       <Footer />
     </AppWrapper>
-  )
+  );
 }
 
-export default App
+export default App;

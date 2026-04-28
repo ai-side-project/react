@@ -1,0 +1,83 @@
+.dashboard-page {
+  padding-top: 14px;
+}
+
+.saved-schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.saved-schedule-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.saved-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.saved-schedule-header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.saved-schedule-header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.saved-schedule-memo {
+  margin-top: 10px;
+}
+
+.saved-schedule-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.saved-schedule-actions button {
+  height: 34px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary-weak);
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.saved-schedule-actions button.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.saved-place-list {
+  margin: 16px 0 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: var(--text);
+}
+
+.saved-place-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.saved-place-list strong {
+  color: var(--text);
+}

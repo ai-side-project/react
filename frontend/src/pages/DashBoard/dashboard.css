@@ -1,0 +1,150 @@
+.dashboard-page {
+  padding-top: 14px;
+}
+
+.edit-schedule-box {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #f8fafc;
+  margin-bottom: 16px;
+}
+
+.edit-schedule-box h3 {
+  margin: 0 0 16px;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.edit-schedule-box label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.edit-schedule-box input,
+.edit-schedule-box textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.edit-schedule-box textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.edit-schedule-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.edit-schedule-actions button {
+  height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-schedule-actions button:last-child {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.saved-schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.saved-schedule-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.saved-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.saved-schedule-header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.saved-schedule-header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.saved-schedule-memo {
+  margin-top: 10px;
+}
+
+.saved-schedule-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.saved-schedule-actions button {
+  height: 34px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary-weak);
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.saved-schedule-actions button.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.saved-place-list {
+  margin: 16px 0 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: var(--text);
+}
+
+.saved-place-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5eaf2;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.saved-place-list li:last-child {
+  border-bottom: none;
+}
+
+.saved-place-list strong {
+  color: var(--text);
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import axios from "axios"
 import styled from "styled-components"
 
@@ -8,6 +8,22 @@ const ChromaManager = () => {
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState("")
+  const [fileList, setFileList] = useState([])
+
+  const fetchFileList = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/files`, {
+        withCredentials: true,
+      })
+      setFileList(response.data)
+    } catch (error) {
+      console.error("파일 목록 로딩 실패:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchFileList()
+  }, [])
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0])
@@ -18,6 +34,14 @@ const ChromaManager = () => {
     e.preventDefault()
     if (!file) {
       setStatus({ message: "파일을 선택해주세요.", type: "error" })
+      return
+    }
+    const isDuplicate = fileList.some((f) => f.filename === file.name)
+    if (isDuplicate) {
+      setStatus({
+        message: "이미 동일한 이름의 파일이 적재되어 있습니다.",
+        type: "error",
+      })
       return
     }
     const formData = new FormData()
@@ -40,6 +64,7 @@ const ChromaManager = () => {
         })
         setFile(null)
         e.target.reset()
+        fetchFileList() // 업로드 후 파일 목록 새로고침
       }
     } catch (error) {
       setStatus({
@@ -50,11 +75,25 @@ const ChromaManager = () => {
       setLoading(false)
     }
   }
+  const handleDelete = async (filename) => {
+    if (!window.confirm(`파일 "${filename}"을(를) 삭제하시겠습니까?`)) return
+    try {
+      await axios.delete(
+        `${API_URL}/admin/files/${encodeURIComponent(filename)}`,
+        { withCredentials: true },
+      )
+      alert("삭제 완료")
+      fetchFileList() // 목록 새로고침
+    } catch (error) {
+      alert("삭제 실패: " + (error.response?.data?.error || "서버 오류"))
+    }
+  }
+
   return (
-    <AdminWrapper className="Admin container">
+    <AdminWrapper>
       <TitleSection>
-        <h1>Admin Dashboard</h1>
-        <p>RAG 시스템의 지식 베이스(ChromaDB)를 관리합니다.</p>
+        <h1>Knowledge Base Manager</h1>
+        <p>AI가 학습할 문서를 업로드하고 관리합니다.</p>
       </TitleSection>
 
       <UploadContainer>
@@ -69,14 +108,59 @@ const ChromaManager = () => {
             {loading ? "처리 중..." : "AI 지식 베이스 업데이트"}
           </SubmitBtn>
         </form>
-
         {status.message && (
           <StatusAlert $type={status.type}>{status.message}</StatusAlert>
         )}
       </UploadContainer>
 
+      {/* 4. 파일 리스트 테이블 추가 */}
+      <ListSection>
+        <h3>현재 적재된 문서 목록</h3>
+        <TableContainer>
+          <FileTable>
+            <thead>
+              <tr>
+                <th>파일명</th>
+                <th>청크 수</th>
+                <th>등록일</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fileList.length > 0 ? (
+                fileList.map((f) => (
+                  <tr key={f.id}>
+                    <td className="filename">{f.filename}</td>
+                    <td>{f.chunks}</td>
+                    <td>{new Date(f.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <DeleteBtn onClick={() => handleDelete(f.filename)}>
+                        삭제
+                      </DeleteBtn>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="4"
+                    style={{
+                      textAlign: "center",
+                      padding: "30px",
+                      color: "#94a3b8",
+                    }}
+                  >
+                    적재된 문서가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </FileTable>
+        </TableContainer>
+      </ListSection>
+
       <HelpText>
-        * 파일 업로드 시 텍스트 추출 및 벡터 임베딩 과정이 자동으로 수행됩니다.
+        * 삭제 시 ChromaDB의 벡터 데이터와 MySQL의 기록이 모두 삭제됩니다.
       </HelpText>
     </AdminWrapper>
   )
@@ -213,4 +297,58 @@ const HelpText = styled.p`
   font-size: 13px;
   color: #94a3b8; /* var(--muted) */
   font-weight: 500;
+`
+const ListSection = styled.div`
+  margin-top: 50px;
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #0f172a;
+  }
+`
+
+const TableContainer = styled.div`
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+`
+
+const FileTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  th {
+    background: #f8fafc;
+    padding: 16px;
+    text-align: left;
+    color: #64748b;
+    font-size: 13px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-size: 14px;
+  }
+  .filename {
+    font-weight: 700;
+    color: #0f172a;
+  }
+`
+
+const DeleteBtn = styled.button`
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: white;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  &:hover {
+    background: #fef2f2;
+  }
 `

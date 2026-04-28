@@ -84,115 +84,133 @@ const ChromaManager = () => {
 
 export default ChromaManager
 
-// --- Styled Components ---
-
 const AdminWrapper = styled.div`
-  max-width: 900px;
-  margin: 80px auto;
-  color: #ffffff;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #0f172a; /* var(--text) 계열 */
 `
 
 const TitleSection = styled.div`
-  margin-bottom: 50px;
-  border-left: 5px solid #007bff;
-  padding-left: 20px;
+  margin-bottom: 40px;
+  /* 홈의 border-left 스타일 대신 깔끔한 레이아웃으로 변경 */
 
   h1 {
-    font-size: 2.2rem;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #0f172a;
     margin-bottom: 8px;
   }
+
   p {
-    color: #a0a0a0;
+    color: #64748b; /* var(--muted) 계열 */
+    font-size: 15px;
+    line-height: 1.6;
   }
 `
 
 const UploadContainer = styled.div`
-  background: #1e1e1e;
-  padding: 40px;
-  border-radius: 12px;
-  border: 1px solid #333;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 18px; /* 홈의 카드 border-radius */
+  border: 1px solid #e2e8f0; /* var(--border) */
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04); /* 홈의 그림자 */
 `
 
 const Label = styled.label`
   display: block;
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #0f172a;
 `
 
 const CustomFileInput = styled.input`
   width: 100%;
-  padding: 12px;
-  background: #2a2a2a;
-  border: 2px dashed #444;
-  border-radius: 8px;
-  margin-bottom: 30px;
-  color: #ccc;
+  padding: 14px;
+  background: #f8fafc; /* 홈의 입력창 배경색 */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: #334155;
+  font-size: 14px;
 
   &::file-selector-button {
-    background: #007bff;
+    background: #6789ca; /* var(--primary) 계열 */
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: 10px 18px;
+    border-radius: 10px;
     cursor: pointer;
-    margin-right: 20px;
-    transition: 0.3s;
+    margin-right: 16px;
+    font-weight: 700;
+    font-size: 13px;
+    transition: 0.2s;
 
     &:hover {
-      background: #0056b3;
+      background: #5674b0;
     }
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(103, 137, 202, 0.55);
+    box-shadow: 0 0 0 4px rgba(103, 137, 202, 0.1);
   }
 `
 
 const SubmitBtn = styled.button`
   width: 100%;
-  padding: 15px;
-  background: ${(props) => (props.disabled ? "#444" : "#007bff")};
+  height: 52px;
+  background: ${(props) => (props.disabled ? "#e2e8f0" : "#6789ca")};
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 700;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  transition: 0.3s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(103, 137, 202, 0.2);
 
-  &:hover {
-    background: ${(props) => (props.disabled ? "#444" : "#0056b3")};
-    transform: ${(props) => (props.disabled ? "none" : "translateY(-2px)")};
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #5674b0;
+    box-shadow: 0 6px 16px rgba(103, 137, 202, 0.3);
   }
 `
 
 const StatusAlert = styled.div`
-  margin-top: 25px;
-  padding: 15px;
-  border-radius: 6px;
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 12px;
   text-align: center;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
 
-  /* 상태 타입별 색상 적용 */
+  /* 홈 테마에 맞춘 부드러운 상태 색상 */
   background: ${(props) => {
-    if (props.$type === "success") return "#1b4332"
-    if (props.$type === "error") return "#5a1a1a"
-    return "#2c3e50"
+    if (props.$type === "success") return "#f0fdf4"
+    if (props.$type === "error") return "#fef2f2"
+    return "#f1f5f9"
   }};
   color: ${(props) => {
-    if (props.$type === "success") return "#b7e4c7"
-    if (props.$type === "error") return "#ffb3b3"
-    return "#d1d8e0"
+    if (props.$type === "success") return "#15803d"
+    if (props.$type === "error") return "#b91c1c"
+    return "#475569"
   }};
   border: 1px solid
     ${(props) => {
-      if (props.$type === "success") return "#2d6a4f"
-      if (props.$type === "error") return "#8e1c1c"
-      return "#34495e"
+      if (props.$type === "success") return "#bbf7d0"
+      if (props.$type === "error") return "#fecaca"
+      return "#e2e8f0"
     }};
 `
 
 const HelpText = styled.p`
-  margin-top: 30px;
+  margin-top: 24px;
   text-align: center;
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 13px;
+  color: #94a3b8; /* var(--muted) */
+  font-weight: 500;
 `

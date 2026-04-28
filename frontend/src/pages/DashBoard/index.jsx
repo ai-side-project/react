@@ -4,7 +4,12 @@ import "./dashboard.css";
 
 const Dashboard = () => {
   const [schedules, setSchedules] = useState([]);
-  const [openedGroupId, setOpenedGroupId] = useState(null);
+  const [openedScheduleId, setOpenedScheduleId] = useState(null);
+  const [editingSchedule, setEditingSchedule] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editTime, setEditTime] = useState("");
+  const [editMemo, setEditMemo] = useState("");
 
   const fetchSchedules = async () => {
     try {
@@ -25,87 +30,100 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // fetchSchedules();
-    setSchedules([
-      {
-        schedule_group_id: "test-schedule-1",
-        schedule_title: "한강 산책 코스",
-        visit_date: "2026-04-30",
-        visit_time: "17:10",
-        memo: "부모님과 함께 가는 일정",
-        places: [
-          {
-            place_id: 1,
-            visit_order: 1,
-            name: "서울함 공원",
-            address: "서울 마포구 망원동 205-5",
-            road_address: "서울 마포구 마포나루길 407",
-          },
-          {
-            place_id: 2,
-            visit_order: 2,
-            name: "석촌호수 야경",
-            address: "서울 송파구 잠실동 47",
-            road_address: "서울 송파구 삼학사로 136",
-          },
-        ],
-      },
-      {
-        schedule_group_id: "test-schedule-2",
-        schedule_title: "야경 여행 코스",
-        visit_date: "2026-05-02",
-        visit_time: "19:00",
-        memo: "저녁 이후 산책 코스",
-        places: [
-          {
-            place_id: 3,
-            visit_order: 1,
-            name: "청계천",
-            address: "서울 종로구 무교로 37",
-            road_address: "서울 종로구 무교로 37",
-          },
-          {
-            place_id: 4,
-            visit_order: 2,
-            name: "반포 한강공원",
-            address: "서울 서초구 반포동",
-            road_address: "서울 서초구 신반포로11길 40",
-          },
-        ],
-      },
-    ]);
+    fetchSchedules();
   }, []);
 
-  const handleDeleteSchedule = async (groupId) => {
+  const handleDeleteSchedule = async (scheduleId) => {
     const confirmed = window.confirm("이 일정을 삭제하시겠습니까?");
 
     if (!confirmed) return;
 
-    setSchedules((prev) =>
-      prev.filter((schedule) => schedule.schedule_group_id !== groupId),
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/schedules/${scheduleId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("일정 삭제 실패");
+      }
+
+      alert("일정이 삭제되었습니다.");
+      fetchSchedules();
+    } catch (error) {
+      console.error("일정 삭제 실패:", error);
+      alert("일정 삭제 중 문제가 발생했습니다.");
+    }
   };
 
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:5000/api/schedules/${groupId}`,
-  //       {
-  //         method: "DELETE",
-  //         credentials: "include",
-  //       },
-  //     );
+  const handleStartEdit = (schedule) => {
+    setEditingSchedule(schedule);
 
-  //     if (!response.ok) {
-  //       throw new Error("일정 삭제 실패");
-  //     }
+    setEditTitle(schedule.schedule_title || "");
+    setEditDate(schedule.start_date ? schedule.start_date.slice(0, 10) : "");
+    setEditTime(schedule.places?.[0]?.visit_time?.slice(0, 5) || "");
+    setEditMemo(schedule.places?.[0]?.memo || "");
+  };
 
-  //     alert("일정이 삭제되었습니다.");
-  //     fetchSchedules();
-  //   } catch (error) {
-  //     console.error("일정 삭제 실패:", error);
-  //     alert("일정 삭제 중 문제가 발생했습니다.");
-  //   }
-  // };
+  const handleCancelEdit = () => {
+    setEditingSchedule(null);
+    setEditTitle("");
+    setEditDate("");
+    setEditTime("");
+    setEditMemo("");
+  };
+
+  const handleUpdateSchedule = async () => {
+    if (!editingSchedule) return;
+
+    if (!editTitle.trim()) {
+      alert("일정 제목을 입력해주세요.");
+      return;
+    }
+
+    if (!editDate) {
+      alert("방문 날짜를 선택해주세요.");
+      return;
+    }
+
+    if (!editTime) {
+      alert("시작 시간을 선택해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/schedules/${editingSchedule.schedule_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            schedule_title: editTitle,
+            visit_date: editDate,
+            visit_time: editTime,
+            memo: editMemo,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("일정 수정 실패");
+      }
+
+      alert("일정이 수정되었습니다.");
+      handleCancelEdit();
+      fetchSchedules();
+    } catch (error) {
+      console.error("일정 수정 실패:", error);
+      alert("일정 수정 중 문제가 발생했습니다.");
+    }
+  };
 
   return (
     <section className="home-page dashboard-page">
@@ -130,6 +148,56 @@ const Dashboard = () => {
             <span className="results-count">{schedules.length}건</span>
           </div>
 
+          {editingSchedule ? (
+            <div className="edit-schedule-box">
+              <h3>일정 수정</h3>
+
+              <label>
+                일정 제목
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(event) => setEditTitle(event.target.value)}
+                />
+              </label>
+
+              <label>
+                방문 날짜
+                <input
+                  type="date"
+                  value={editDate}
+                  onChange={(event) => setEditDate(event.target.value)}
+                />
+              </label>
+
+              <label>
+                시작 시간
+                <input
+                  type="time"
+                  value={editTime}
+                  onChange={(event) => setEditTime(event.target.value)}
+                />
+              </label>
+
+              <label>
+                메모
+                <textarea
+                  value={editMemo}
+                  onChange={(event) => setEditMemo(event.target.value)}
+                />
+              </label>
+
+              <div className="edit-schedule-actions">
+                <button type="button" onClick={handleUpdateSchedule}>
+                  수정 완료
+                </button>
+                <button type="button" onClick={handleCancelEdit}>
+                  취소
+                </button>
+              </div>
+            </div>
+          ) : null}
+
           {schedules.length === 0 ? (
             <div className="results-empty">
               <strong>저장한 일정이 없습니다.</strong>
@@ -139,20 +207,21 @@ const Dashboard = () => {
             <div className="saved-schedule-list">
               {schedules.map((schedule) => (
                 <article
-                  key={schedule.schedule_group_id}
+                  key={schedule.schedule_id}
                   className="saved-schedule-card"
                 >
                   <div className="saved-schedule-header">
                     <div>
                       <h3>{schedule.schedule_title}</h3>
                       <p>
-                        {schedule.visit_date} · {schedule.visit_time} · 장소{" "}
+                        {schedule.start_date} ·{" "}
+                        {schedule.places?.[0]?.visit_time || "시간 미정"} · 장소{" "}
                         {schedule.places?.length || 0}개
                       </p>
 
-                      {schedule.memo ? (
+                      {schedule.places?.[0]?.memo ? (
                         <p className="saved-schedule-memo">
-                          메모: {schedule.memo}
+                          메모: {schedule.places[0].memo}
                         </p>
                       ) : null}
                     </div>
@@ -161,23 +230,28 @@ const Dashboard = () => {
                       <button
                         type="button"
                         onClick={() =>
-                          setOpenedGroupId(
-                            openedGroupId === schedule.schedule_group_id
+                          setOpenedScheduleId(
+                            openedScheduleId === schedule.schedule_id
                               ? null
-                              : schedule.schedule_group_id,
+                              : schedule.schedule_id,
                           )
                         }
                       >
                         상세보기
                       </button>
 
-                      <button type="button">수정</button>
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(schedule)}
+                      >
+                        수정
+                      </button>
 
                       <button
                         type="button"
                         className="danger"
                         onClick={() =>
-                          handleDeleteSchedule(schedule.schedule_group_id)
+                          handleDeleteSchedule(schedule.schedule_id)
                         }
                       >
                         삭제
@@ -185,10 +259,10 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  {openedGroupId === schedule.schedule_group_id ? (
+                  {openedScheduleId === schedule.schedule_id ? (
                     <ol className="saved-place-list">
                       {schedule.places.map((place) => (
-                        <li key={place.place_id}>
+                        <li key={place.schedule_item_id || place.place_id}>
                           <strong>
                             {place.visit_order}. {place.name}
                           </strong>

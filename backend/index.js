@@ -13,10 +13,11 @@ const homeRouter = require("./routes/home_router");
 const reviewRouter = require("./routes/reveiw_router");
 const chatRouter = require("./routes/chatbot_router");
 const adminRouter = require("./routes/admin_router");
-const scheduleRouter = require("./routes/schedule_router");
 const passportConfig = require("./passport");
 const { RedisStore } = require("connect-redis");
 const favoriteRouter = require("./routes/favorite_router");
+const scheduleRouter = require("./routes/schedule_router");
+
 //const { createClient } = require("redis")
 //const redisClient = createClient()
 const pool = require("./db/db");
@@ -101,8 +102,8 @@ app.use("/api/intro", introRouter);
 app.use("/api/home", homeRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/admin", adminRouter);
-app.use("/api/schedules", scheduleRouter);
 app.use("/api/favorites", favoriteRouter);
+app.use("/api/schedules", scheduleRouter);
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter);
 // 기본 라우트

@@ -36,27 +36,7 @@ const Schedule = () => {
   };
 
   useEffect(() => {
-    // fetchFavorites();
-    setFavorites([
-      {
-        id: 1,
-        name: "서울함 공원",
-        road_address: "서울 마포구 마포나루길 407",
-        address: "서울 마포구 망원동 205-5",
-        description:
-          "실제 군함 전시와 해양 체험을 함께 즐길 수 있는 공원형 전시 공간.",
-        main_image_url: "mapo-gu-seoul-battleship-park-1.jpg",
-      },
-      {
-        id: 2,
-        name: "석촌호수 야경",
-        road_address: "서울 송파구 삼학사로 136",
-        address: "서울 송파구 잠실동 47",
-        description:
-          "호수를 따라 산책과 야경을 즐길 수 있는 송파구의 대표 수변공원.",
-        main_image_url: null,
-      },
-    ]);
+    fetchFavorites();
   }, []);
 
   const handlePlaceClick = async (placeId) => {
@@ -111,6 +91,40 @@ const Schedule = () => {
           visit_order: index + 1,
         })),
     );
+  };
+
+  const handleRemoveFavorite = async (placeId) => {
+    const confirmed = window.confirm("즐겨찾기에서 삭제하시겠습니까?");
+
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/favorites/${placeId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("즐겨찾기 해제 실패");
+      }
+
+      setFavorites((prev) => prev.filter((place) => place.id !== placeId));
+
+      setSelectedPlaces((prev) =>
+        prev
+          .filter((place) => place.id !== placeId)
+          .map((place, index) => ({
+            ...place,
+            visit_order: index + 1,
+          })),
+      );
+    } catch (error) {
+      console.error("즐겨찾기 해제 실패:", error);
+      alert("즐겨찾기 해제 중 문제가 발생했습니다.");
+    }
   };
 
   const handleSaveSchedule = async () => {
@@ -207,15 +221,27 @@ const Schedule = () => {
                       className="place-card"
                       onClick={() => handlePlaceClick(place.id)}
                     >
-                      <img
-                        src={
-                          place.main_image_url
-                            ? `${IMAGE_BASE_URL}/${place.main_image_url}`
-                            : "/images/default-place-image.png"
-                        }
-                        alt={place.name}
-                        className="place-image"
-                      />
+                      <div className="place-image-wrap">
+                        <img
+                          src={
+                            place.main_image_url
+                              ? `${IMAGE_BASE_URL}/${place.main_image_url}`
+                              : "/images/default-place-image.png"
+                          }
+                          alt={place.name}
+                          className="place-image"
+                        />
+                        <button
+                          type="button"
+                          className="favorite-button active"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleRemoveFavorite(place.id);
+                          }}
+                        >
+                          ♥
+                        </button>
+                      </div>
 
                       <div className="place-content">
                         <h3>{place.name}</h3>

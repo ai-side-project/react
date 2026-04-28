@@ -158,3 +158,11 @@ CREATE TABLE schedule_items (
     CONSTRAINT fk_item_schedule FOREIGN KEY (schedule_id) REFERENCES schedules(id) ON DELETE CASCADE,
     CONSTRAINT fk_item_place FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE rag_files (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL UNIQUE, -- 중복 방지를 위해 UNIQUE 설정
+    file_type VARCHAR(50),                 -- pdf, txt 등
+    chunks INT DEFAULT 0,                  -- FastAPI에서 반환해준 청크 수 저장
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

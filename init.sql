@@ -119,7 +119,7 @@ CREATE TABLE place_category_mapping (
     CONSTRAINT fk_mapping_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-+-- 9. 유저 즐겨찾기 테이블 (N:M)   
+-- 9. 유저 즐겨찾기 테이블 (N:M)   
 CREATE TABLE user_favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -142,8 +142,6 @@ CREATE TABLE schedules (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_schedules_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
 
 CREATE TABLE schedule_items (
     id INT AUTO_INCREMENT PRIMARY KEY,

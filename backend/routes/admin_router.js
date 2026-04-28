@@ -30,7 +30,9 @@ if (!fs.existsSync(adminUploadDir)) {
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, adminUploadDir),
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`)
+    // 여기서도 한글 복구 로직을 적용해줘야 서버 폴더에 저장되는 파일명이 안 깨집니다.
+    const safeName = Buffer.from(file.originalname, "latin1").toString("utf8")
+    cb(null, `${Date.now()}-${safeName}`)
   },
 })
 
@@ -50,14 +52,19 @@ router.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
     return res.status(400).json({ error: "파일이 업로드되지 않았습니다." })
   }
 
-  console.log(`[Admin] 파일 수신 완료: ${req.file.filename}`)
+  // 한글깨짐 방지
+  const safeOriginalName = Buffer.from(
+    req.file.originalname,
+    "latin1",
+  ).toString("utf8")
+  console.log(`[Admin] 파일 수신 완료: ${safeOriginalName}`)
 
   try {
     // 1. FastAPI로 보낼 FormData 생성
     const formData = new FormData()
     // 스트림을 사용하여 대용량 파일도 메모리 부담 없이 전달
     formData.append("file", fs.createReadStream(req.file.path), {
-      filename: req.file.originalname,
+      filename: safeOriginalName,
       contentType: req.file.mimetype,
     })
 
@@ -78,7 +85,10 @@ router.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "데이터 적재가 완료되었습니다.",
-      details: response.data, // { filename, chunks }
+      details: {
+        ...response.data,
+        filename: safeOriginalName, // { filename, chunks }
+      },
     })
   } catch (error) {
     console.error("[Admin Error] FastAPI 연동 실패:", error.message)

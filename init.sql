@@ -15,6 +15,9 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS boards;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS schedule_items;
+DROP TABLE IF EXISTS schedules;
+DROP TABLE IF EXISTS user_favorites;
 
 -- 3. 유저 테이블 (is_admin 컬럼 포함)
 CREATE TABLE users (
@@ -116,16 +119,42 @@ CREATE TABLE place_category_mapping (
     CONSTRAINT fk_mapping_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 9. 유저 스케줄 테이블 (유저-관광지 N:M 연결)
-CREATE TABLE user_schedules (
++-- 9. 유저 즐겨찾기 테이블 (N:M)   
+CREATE TABLE user_favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     place_id INT NOT NULL,
-    visit_date DATE DEFAULT NULL,
-    visit_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_fav_place FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
+    -- 한 유저가 같은 장소를 중복해서 즐겨찾기 할 수 없도록 설정
+    UNIQUE KEY unique_user_place (user_id, place_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 10. 스케줄 관련 테이블
+CREATE TABLE schedules (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    start_date DATE NULL,
+    end_date DATE NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_schedules_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE schedule_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    schedule_id INT NOT NULL,     -- 어느 스케줄(여행)에 포함되는가
+    place_id INT NOT NULL,        -- 어떤 관광지인가
+    visit_date DATE DEFAULT NULL, -- 여행 중 며칠차 방문인지
+    visit_time TIME DEFAULT NULL, -- 방문 시간 (예: 14:30:00)
+    visit_order INT DEFAULT 0,    -- 그날의 방문 순서
     memo TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_schedule_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_schedule_place FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
+    CONSTRAINT fk_item_schedule FOREIGN KEY (schedule_id) REFERENCES schedules(id) ON DELETE CASCADE,
+    CONSTRAINT fk_item_place FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

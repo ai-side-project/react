@@ -51,7 +51,6 @@ console.log("현재 작업 디렉토리:", process.cwd())
  */
 router.get("/users", requireAdmin, async (req, res) => {
   try {
-    // 비밀번호 같은 민감 정보는 제외하고 가져오는 게 포인트!
     const [rows] = await db.query(
       "SELECT id, nickname, email, is_admin, created_at FROM users",
     )

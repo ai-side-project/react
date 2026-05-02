@@ -21,9 +21,10 @@ services:
     healthcheck:
       test:
         ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 10
+      start_period: 40s
   redis:
     image: redis:alpine
     container_name: project_redis

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import "./home.css";
+import { useEffect, useState } from "react"
+import "./home.css"
 
 const CATEGORIES = [
   "공원·자연",
@@ -9,39 +9,39 @@ const CATEGORIES = [
   "전망·랜드마크",
   "체험·놀이",
   "야경",
-];
+]
 
-const IMAGE_BASE_URL = "http://localhost:5000/img";
+const IMAGE_BASE_URL = "http://localhost:5000/img"
 
 const Home = () => {
-  const [keyword, setKeyword] = useState("");
-  const [activeCategory, setActiveCategory] = useState("");
-  const [results, setResults] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [searchMode, setSearchMode] = useState("");
-  const [selectedPlace, setSelectedPlace] = useState(null);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [favoriteIds, setFavoriteIds] = useState([]);
+  const [keyword, setKeyword] = useState("")
+  const [activeCategory, setActiveCategory] = useState("")
+  const [results, setResults] = useState([])
+  const [hasSearched, setHasSearched] = useState(false)
+  const [searchMode, setSearchMode] = useState("")
+  const [selectedPlace, setSelectedPlace] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [favoriteIds, setFavoriteIds] = useState([])
 
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 6
 
-  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentResults = results.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const currentResults = results.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
   const handleKeywordSearch = async () => {
-    const trimmedKeyword = keyword.trim();
+    const trimmedKeyword = keyword.trim()
 
-    setActiveCategory("");
-    setSearchMode("keyword");
-    setHasSearched(true);
-    setCurrentPage(1);
+    setActiveCategory("")
+    setSearchMode("keyword")
+    setHasSearched(true)
+    setCurrentPage(1)
 
     if (!trimmedKeyword) {
-      setResults([]);
-      return;
+      setResults([])
+      return
     }
 
     try {
@@ -49,110 +49,110 @@ const Home = () => {
         `http://localhost:5000/api/home/search?keyword=${encodeURIComponent(
           trimmedKeyword,
         )}`,
-      );
+      )
 
       if (!response.ok) {
-        throw new Error("검색 API 요청 실패");
+        throw new Error("검색 API 요청 실패")
       }
 
-      const data = await response.json();
-      setResults(data);
+      const data = await response.json()
+      setResults(data)
     } catch (error) {
-      console.error("검색 실패:", error);
-      setResults([]);
+      console.error("검색 실패:", error)
+      setResults([])
     }
-  };
+  }
 
   const handleCategorySearch = async (category) => {
-    setKeyword("");
-    setActiveCategory(category);
-    setSearchMode("category");
-    setHasSearched(true);
-    setCurrentPage(1);
+    setKeyword("")
+    setActiveCategory(category)
+    setSearchMode("category")
+    setHasSearched(true)
+    setCurrentPage(1)
 
     try {
       const response = await fetch(
         `http://localhost:5000/api/home/category?category=${encodeURIComponent(
           category,
         )}`,
-      );
+      )
 
       if (!response.ok) {
-        throw new Error("카테고리 검색 API 요청 실패");
+        throw new Error("카테고리 검색 API 요청 실패")
       }
 
-      const data = await response.json();
-      setResults(data);
+      const data = await response.json()
+      setResults(data)
     } catch (error) {
-      console.error("카테고리 검색 실패:", error);
-      setResults([]);
+      console.error("카테고리 검색 실패:", error)
+      setResults([])
     }
-  };
+  }
 
   const handlePlaceClick = async (placeId) => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/home/places/${placeId}`,
-      );
+      )
 
       if (!response.ok) {
-        throw new Error("장소 상세 조회 실패");
+        throw new Error("장소 상세 조회 실패")
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
-      setSelectedImages(data.images);
-      setIsModalOpen(true);
-      setSelectedPlace(data.place);
+      setSelectedImages(data.images)
+      setIsModalOpen(true)
+      setSelectedPlace(data.place)
     } catch (error) {
-      console.error("장소 상세 조회 실패:", error);
+      console.error("장소 상세 조회 실패:", error)
     }
-  };
+  }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedPlace(null);
-    setSelectedImages([]);
-  };
+    setIsModalOpen(false)
+    setSelectedPlace(null)
+    setSelectedImages([])
+  }
 
   const handleReset = () => {
-    setKeyword("");
-    setActiveCategory("");
-    setResults([]);
-    setHasSearched(false);
-    setSearchMode("");
-    setCurrentPage(1);
-  };
+    setKeyword("")
+    setActiveCategory("")
+    setResults([])
+    setHasSearched(false)
+    setSearchMode("")
+    setCurrentPage(1)
+  }
 
   const handleKeywordKeyDown = (event) => {
     if (event.key === "Enter") {
-      handleKeywordSearch();
+      handleKeywordSearch()
     }
-  };
+  }
 
   const fetchFavorites = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/favorites", {
         credentials: "include",
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("즐겨찾기 목록 조회 실패");
+        throw new Error("즐겨찾기 목록 조회 실패")
       }
 
-      const data = await response.json();
-      setFavoriteIds(data.map((place) => place.id));
+      const data = await response.json()
+      setFavoriteIds(data.map((place) => place.id))
     } catch (error) {
-      console.error("즐겨찾기 목록 조회 실패:", error);
+      console.error("즐겨찾기 목록 조회 실패:", error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchFavorites();
-  }, []);
+    fetchFavorites()
+  }, [])
 
   const handleToggleFavorite = async (place) => {
-    const isFavorite = favoriteIds.includes(place.id);
+    const isFavorite = favoriteIds.includes(place.id)
 
     try {
       const response = await fetch(
@@ -161,44 +161,44 @@ const Home = () => {
           method: isFavorite ? "DELETE" : "POST",
           credentials: "include",
         },
-      );
+      )
 
       if (!response.ok) {
-        throw new Error("즐겨찾기 처리 실패");
+        throw new Error("즐겨찾기 처리 실패")
       }
 
       if (isFavorite) {
-        setFavoriteIds((prev) => prev.filter((id) => id !== place.id));
+        setFavoriteIds((prev) => prev.filter((id) => id !== place.id))
       } else {
-        setFavoriteIds((prev) => [...prev, place.id]);
+        setFavoriteIds((prev) => [...prev, place.id])
       }
     } catch (error) {
-      console.error("즐겨찾기 처리 실패:", error);
-      alert("즐겨찾기 처리 중 문제가 발생했습니다.");
+      console.error("즐겨찾기 처리 실패:", error)
+      alert("즐겨찾기 처리 중 문제가 발생했습니다.")
     }
-  };
+  }
 
   const renderStatusText = () => {
     if (!hasSearched) {
-      return "장소명을 입력하거나 아래 카테고리를 선택해 여행지를 찾아보세요.";
+      return "장소명을 입력하거나 아래 카테고리를 선택해 여행지를 찾아보세요."
     }
 
     if (searchMode === "keyword") {
       return keyword.trim()
         ? `'${keyword.trim()}' 검색 결과입니다.`
-        : "검색어를 입력하면 장소명 기준으로 결과를 확인할 수 있습니다.";
+        : "검색어를 입력하면 장소명 기준으로 결과를 확인할 수 있습니다."
     }
 
     if (searchMode === "category" && activeCategory) {
-      return `'${activeCategory}' 카테고리 결과입니다.`;
+      return `'${activeCategory}' 카테고리 결과입니다.`
     }
 
-    return "검색 결과를 확인해보세요.";
-  };
-
+    return "검색 결과를 확인해보세요."
+  }
   return (
     <section className="home-page">
       <div className="container home-container">
+        {/* 헤더 섹션 */}
         <div className="home-hero">
           <div className="home-copy">
             <p className="home-eyebrow">SEOUL TRAVEL SPOT SEARCH</p>
@@ -208,6 +208,8 @@ const Home = () => {
             </p>
           </div>
         </div>
+
+        {/* 검색 패널 */}
         <section className="search-panel">
           <div className="search-box">
             <label className="search-label" htmlFor="place-search-input">
@@ -218,7 +220,7 @@ const Home = () => {
                 id="place-search-input"
                 type="text"
                 value={keyword}
-                onChange={(event) => setKeyword(event.target.value)}
+                onChange={(e) => setKeyword(e.target.value)}
                 onKeyDown={handleKeywordKeyDown}
                 placeholder="예: 경복궁, 서울숲, N서울타워"
                 className="search-input"
@@ -244,15 +246,12 @@ const Home = () => {
                 초기화
               </button>
             </div>
-
             <div className="category-grid">
               {CATEGORIES.map((category) => (
                 <button
                   key={category}
                   type="button"
-                  className={`category-button ${
-                    activeCategory === category ? "active" : ""
-                  }`}
+                  className={`category-button ${activeCategory === category ? "active" : ""}`}
                   onClick={() => handleCategorySearch(category)}
                 >
                   {category}
@@ -262,32 +261,33 @@ const Home = () => {
           </div>
         </section>
 
+        {/* 결과 섹션 */}
         <section className="results-section">
           <div className="results-header">
             <div>
               <h2>검색 결과</h2>
               <p>{renderStatusText()}</p>
             </div>
-            {hasSearched && results.length > 0 ? (
+            {hasSearched && results.length > 0 && (
               <span className="results-count">{results.length}건</span>
-            ) : null}
+            )}
           </div>
 
-          {!hasSearched ? (
+          {!hasSearched && (
             <div className="results-empty">
               <strong>아직 검색하지 않았습니다.</strong>
               <p>장소명 검색 또는 카테고리 버튼을 눌러 결과를 확인해보세요.</p>
             </div>
-          ) : null}
+          )}
 
-          {hasSearched && results.length === 0 ? (
+          {hasSearched && results.length === 0 && (
             <div className="results-empty">
               <strong>검색 결과가 없습니다.</strong>
               <p>다른 장소명을 입력하거나 다른 카테고리를 선택해보세요.</p>
             </div>
-          ) : null}
+          )}
 
-          {hasSearched && results.length > 0 ? (
+          {hasSearched && results.length > 0 && (
             <>
               <div className="results-grid">
                 {currentResults.map((place) => (
@@ -299,21 +299,24 @@ const Home = () => {
                     <div className="place-image-wrap">
                       <img
                         src={
-                          place.main_image_url
-                            ? `${IMAGE_BASE_URL}/${place.main_image_url}`
+                          place.main_image
+                            ? place.main_image.startsWith("http")
+                              ? place.main_image
+                              : `${IMAGE_BASE_URL}/${place.main_image}`
                             : "/images/default-place-image.png"
                         }
                         alt={place.name}
                         className="place-image"
+                        onError={(e) => {
+                          e.target.src = "/images/default-place-image.png"
+                        }}
                       />
                       <button
                         type="button"
-                        className={`favorite-button ${
-                          favoriteIds.includes(place.id) ? "active" : ""
-                        }`}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleToggleFavorite(place);
+                        className={`favorite-button ${favoriteIds.includes(place.id) ? "active" : ""}`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleToggleFavorite(place)
                         }}
                       >
                         {favoriteIds.includes(place.id) ? "♥" : "♡"}
@@ -322,80 +325,70 @@ const Home = () => {
 
                     <div className="place-content">
                       <h3>{place.name}</h3>
+                      {/* [수정] road_address -> new_address */}
                       <p className="place-address">
-                        {place.road_address || place.address}
+                        {place.new_address || place.address || "주소 정보 없음"}
                       </p>
-                      <p className="place-description">{place.description}</p>
+                      <p className="place-description">
+                        {place.summary || place.description}
+                      </p>
                     </div>
                   </article>
                 ))}
               </div>
 
-              {totalPages > 1 ? (
+              {/* 페이지네이션 (생략 가능하면 유지) */}
+              {totalPages > 1 && (
                 <div className="pagination">
                   <button
-                    type="button"
                     onClick={() => setCurrentPage((prev) => prev - 1)}
                     disabled={currentPage === 1}
                   >
                     이전
                   </button>
-
-                  {Array.from(
-                    { length: Math.min(10, totalPages) },
-                    (_, index) => {
-                      const pageGroup = Math.floor((currentPage - 1) / 10);
-                      const pageNumber = pageGroup * 10 + index + 1;
-
-                      if (pageNumber > totalPages) {
-                        return null;
-                      }
-
-                      return (
-                        <button
-                          key={pageNumber}
-                          type="button"
-                          onClick={() => setCurrentPage(pageNumber)}
-                          className={currentPage === pageNumber ? "active" : ""}
-                        >
-                          {pageNumber}
-                        </button>
-                      );
-                    },
-                  )}
-
+                  {Array.from({ length: Math.min(10, totalPages) }, (_, i) => {
+                    const pageNum =
+                      Math.floor((currentPage - 1) / 10) * 10 + i + 1
+                    return pageNum <= totalPages ? (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={currentPage === pageNum ? "active" : ""}
+                      >
+                        {pageNum}
+                      </button>
+                    ) : null
+                  })}
                   <button
-                    type="button"
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                     disabled={currentPage === totalPages}
                   >
                     다음
                   </button>
                 </div>
-              ) : null}
+              )}
             </>
-          ) : null}
+          )}
         </section>
-        {isModalOpen && selectedPlace ? (
+
+        {/* 상세 모달 */}
+        {isModalOpen && selectedPlace && (
           <div className="place-modal-backdrop" onClick={handleCloseModal}>
-            <div
-              className="place-modal"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <button
-                type="button"
-                className="place-modal-close"
-                onClick={handleCloseModal}
-              >
+            <div className="place-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="place-modal-close" onClick={handleCloseModal}>
                 ×
               </button>
 
               <div className="place-modal-images">
-                {selectedImages.length > 0 ? (
-                  selectedImages.map((image) => (
+                {selectedImages && selectedImages.length > 0 ? (
+                  selectedImages.map((img) => (
                     <img
-                      key={image.id}
-                      src={`${IMAGE_BASE_URL}/${image.image_url}`}
+                      key={img.id}
+                      src={
+                        img.url.startsWith("http")
+                          ? img.url
+                          : `${IMAGE_BASE_URL}/${img.url}`
+                      }
                       alt={selectedPlace.name}
                       className="place-modal-image"
                     />
@@ -411,29 +404,26 @@ const Home = () => {
 
               <div className="place-modal-content">
                 <h2>{selectedPlace.name}</h2>
-
-                {selectedPlace.description ? (
+                {selectedPlace.description && (
                   <p className="place-modal-description">
                     {selectedPlace.description}
                   </p>
-                ) : null}
+                )}
 
                 <dl className="place-detail-list">
                   <div>
                     <dt>주소</dt>
                     <dd>{selectedPlace.address || "-"}</dd>
                   </div>
-
+                  {/* [수정] new_address 적용 */}
                   <div>
                     <dt>신주소</dt>
-                    <dd>{selectedPlace.road_address || "-"}</dd>
+                    <dd>{selectedPlace.new_address || "-"}</dd>
                   </div>
-
                   <div>
                     <dt>전화번호</dt>
                     <dd>{selectedPlace.telephone || "-"}</dd>
                   </div>
-
                   <div>
                     <dt>웹사이트</dt>
                     <dd>
@@ -450,39 +440,41 @@ const Home = () => {
                       )}
                     </dd>
                   </div>
-
                   <div>
                     <dt>운영시간</dt>
                     <dd>{selectedPlace.opening_hours || "-"}</dd>
                   </div>
-
+                  {/* [수정] business_days 적용[cite: 1] */}
                   <div>
                     <dt>운영요일</dt>
-                    <dd>{selectedPlace.operating_days || "-"}</dd>
+                    <dd>{selectedPlace.business_days || "-"}</dd>
                   </div>
-
                   <div>
                     <dt>휴무일</dt>
                     <dd>{selectedPlace.closed_days || "-"}</dd>
                   </div>
-
+                  {/* [추가] 무장애 정보[cite: 1] */}
+                  <div>
+                    <dt>편의시설</dt>
+                    <dd>
+                      {selectedPlace.disabled_facility &&
+                      selectedPlace.disabled_facility.length > 0
+                        ? selectedPlace.disabled_facility.join(", ")
+                        : "-"}
+                    </dd>
+                  </div>
                   <div>
                     <dt>지하철</dt>
                     <dd>{selectedPlace.traffic_info_subway || "-"}</dd>
-                  </div>
-
-                  <div>
-                    <dt>버스</dt>
-                    <dd>{selectedPlace.traffic_info_bus || "-"}</dd>
                   </div>
                 </dl>
               </div>
             </div>
           </div>
-        ) : null}
+        )}
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

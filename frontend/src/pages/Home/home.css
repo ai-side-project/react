@@ -365,14 +365,14 @@
 
 .place-modal-images {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   padding: 18px;
 }
 
 .place-modal-image {
   width: 100%;
-  height: 220px;
+  height: 180px;
   object-fit: cover;
   border-radius: 16px;
   background: #eef2f7;
@@ -551,125 +551,6 @@
   cursor: not-allowed;
 }
 
-.schedule-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 24px;
-  align-items: start;
-}
-
-.schedule-main {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.schedule-panel {
-  position: sticky;
-  top: 100px;
-  padding: 22px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
-}
-
-.schedule-panel-header h2 {
-  margin: 0;
-  color: var(--text);
-  font-size: 20px;
-}
-
-.schedule-panel-header p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.schedule-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.schedule-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.schedule-form input,
-.schedule-form textarea {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  color: var(--text);
-  font-size: 14px;
-  background: #ffffff;
-  box-sizing: border-box;
-}
-
-.schedule-empty {
-  margin-top: 18px;
-  padding: 18px;
-  border: 1px dashed #d7dee8;
-  border-radius: 14px;
-  background: #fbfcfe;
-  color: var(--muted);
-  font-size: 14px;
-  text-align: center;
-}
-
-.schedule-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.schedule-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 14px;
-  background: var(--primary-weak);
-}
-
-.add-schedule-button {
-  width: 100%;
-  height: 38px;
-  margin-top: 14px;
-  border: none;
-  border-radius: 10px;
-  background: var(--primary);
-  color: var(--on-primary);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.schedule-save-button {
-  width: 100%;
-  height: 46px;
-  margin-top: 18px;
-  border: none;
-  border-radius: 12px;
-  background: var(--primary);
-  color: var(--on-primary);
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 @media (max-width: 1024px) {
   .home-hero,
   .results-grid {
@@ -732,15 +613,5 @@
 
   .place-detail-list {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 1024px) {
-  .schedule-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .schedule-panel {
-    position: static;
   }
 }

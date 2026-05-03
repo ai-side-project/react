@@ -16,151 +16,75 @@ router.get("/", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   const keyword = req.query.keyword || ""
-
-  if (!keyword.trim()) {
-    return res.json([])
-  }
+  if (!keyword.trim()) return res.json([])
 
   try {
     const searchKeyword = `%${keyword.trim()}%`
-
     const [rows] = await pool.query(
-      `
-      SELECT
-        p.id,
-        p.name,
-        p.description,
-        p.address,
-        p.latitude,
-        p.longitude,
-        p.telephone,
-        p.website,
-        p.opening_hours,
-        p.operating_days,
-        p.closed_days,
-        p.traffic_info_subway,
-        p.traffic_info_bus,
-        pi.image_url AS main_image_url
-      FROM places p
-      LEFT JOIN place_images pi
-        ON p.id = pi.place_id
-        AND pi.is_main = 1
-      WHERE
-        p.name LIKE ?
-        OR p.description LIKE ?
-        OR p.address LIKE ?
-        OR p.road_address LIKE ?
-      ORDER BY p.id DESC
-      `,
+      `SELECT 
+        id, name, summary, description, address, new_address, 
+        latitude, longitude, telephone, website, opening_hours, 
+        business_days, closed_days, traffic_info_subway, main_image
+      FROM places
+      WHERE name LIKE ? OR description LIKE ? OR address LIKE ? OR new_address LIKE ?
+      ORDER BY id DESC`,
       [searchKeyword, searchKeyword, searchKeyword, searchKeyword],
     )
-
     res.json(rows)
   } catch (error) {
-    console.error("홈 장소 검색 오류:", error)
-    res.status(500).json({ message: "장소 검색 중 오류가 발생했습니다." })
+    console.error("검색 오류:", error)
+    res.status(500).json({ message: "검색 중 오류 발생" })
   }
 })
 
+// 2. 카테고리 API
 router.get("/category", async (req, res) => {
   const category = req.query.category || ""
-
-  if (!category.trim()) {
-    return res.json([])
-  }
+  if (!category.trim()) return res.json([])
 
   try {
     const [rows] = await pool.query(
-      `
-      SELECT
-        p.id,
-        p.name,
-        p.description,
-        p.address,
-        p.road_address,
-        p.latitude,
-        p.longitude,
-        p.telephone,
-        p.website,
-        p.opening_hours,
-        p.operating_days,
-        p.closed_days,
-        p.traffic_info_subway,
-        p.traffic_info_bus,
-        pi.image_url AS main_image_url
+      `SELECT 
+        p.id, p.name, p.summary, p.description, p.address, p.new_address,
+        p.latitude, p.longitude, p.telephone, p.opening_hours,
+        p.business_days, p.main_image
       FROM places p
-      JOIN place_category_mapping pcm
-        ON p.id = pcm.place_id
-      JOIN categories c
-        ON pcm.category_id = c.id
-      LEFT JOIN place_images pi
-        ON p.id = pi.place_id
-        AND pi.is_main = 1
+      JOIN place_category_mapping pcm ON p.id = pcm.place_id
+      JOIN categories c ON pcm.category_id = c.id
       WHERE c.name = ?
-      ORDER BY p.id DESC
-      `,
+      ORDER BY p.id DESC`,
       [category.trim()],
     )
-
     res.json(rows)
   } catch (error) {
-    console.error("홈 카테고리 검색 오류:", error)
-    res.status(500).json({ message: "카테고리 검색 중 오류가 발생했습니다." })
+    console.error("카테고리 오류:", error)
+    res.status(500).json({ message: "카테고리 검색 오류" })
   }
 })
 
+// 3. 상세 정보 API
 router.get("/places/:id", async (req, res) => {
-  const placeId = req.params.id
-
   try {
-    const [placeRows] = await pool.query(
-      `
-      SELECT
-        id,
-        name,
-        description,
-        address,
-        road_address,
-        latitude,
-        longitude,
-        telephone,
-        website,
-        opening_hours,
-        operating_days,
-        closed_days,
-        traffic_info_subway,
-        traffic_info_bus
-      FROM places
-      WHERE id = ?
-      `,
-      [placeId],
-    )
+    const [rows] = await pool.query("SELECT * FROM places WHERE id = ?", [
+      req.params.id,
+    ])
+    if (rows.length === 0) return res.status(404).json({ message: "장소 없음" })
 
-    if (placeRows.length === 0) {
-      return res.status(404).json({ message: "장소를 찾을 수 없습니다." })
-    }
+    const place = rows[0]
 
-    const [imageRows] = await pool.query(
-      `
-      SELECT
-        id,
-        image_url,
-        is_main,
-        sort_order
-      FROM place_images
-      WHERE place_id = ?
-      ORDER BY sort_order ASC
-      `,
-      [placeId],
-    )
+    // JSON 필드 파싱 (images, disabled_facility 등)
+    const images =
+      typeof place.images === "string"
+        ? JSON.parse(place.images)
+        : place.images || []
 
     res.json({
-      place: placeRows[0],
-      images: imageRows,
+      place: place,
+      images: images.map((img, idx) => ({ id: idx, url: img.url || img })),
     })
   } catch (error) {
-    console.error("장소 상세 조회 오류:", error)
-    res.status(500).json({ message: "장소 상세 조회 중 오류가 발생했습니다." })
+    console.error("상세 조회 오류:", error)
+    res.status(500).json({ message: "상세조회 오류" })
   }
 })
 

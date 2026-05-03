@@ -115,7 +115,7 @@ router.get("/", async (req, res) => {
 
         p.name,
         p.address,
-        p.road_address,
+        p.new_address AS road_address,
         p.description,
 
         pi.image_url AS main_image_url
@@ -190,29 +190,43 @@ router.get("/:scheduleId", async (req, res) => {
   try {
     const [rows] = await pool.query(
       `
-      SELECT
-        s.id AS schedule_id,
-        s.title AS schedule_title,
-        s.start_date,
-        s.end_date,
-        s.created_at,
-        si.id AS schedule_item_id,
-        si.place_id,
-        si.visit_date,
-        si.visit_time,
-        si.visit_order,
-        si.memo,
-        p.name,
-        p.address,
-        p.road_address,
-        p.description,
-        p.main_image_url
-      FROM schedules s
-      LEFT JOIN schedule_items si ON s.id = si.schedule_id
-      LEFT JOIN places p ON si.place_id = p.id
-      WHERE s.user_id = ? AND s.id = ?
-      ORDER BY si.visit_order ASC
-      `,
+  SELECT
+    s.id AS schedule_id,
+    s.title AS schedule_title,
+    s.start_date,
+    s.end_date,
+    s.created_at,
+
+    si.id AS schedule_item_id,
+    si.place_id,
+    si.visit_date,
+    si.visit_time,
+    si.visit_order,
+    si.memo,
+
+    p.name,
+    p.address,
+    p.new_address AS road_address,
+    p.description,
+
+    pi.image_url AS main_image_url
+
+  FROM schedules s
+  LEFT JOIN schedule_items si
+    ON s.id = si.schedule_id
+  LEFT JOIN places p
+    ON si.place_id = p.id
+  LEFT JOIN (
+    SELECT
+      place_id,
+      MIN(image_url) AS image_url
+    FROM place_images
+    GROUP BY place_id
+  ) pi
+    ON p.id = pi.place_id
+  WHERE s.user_id = ? AND s.id = ?
+  ORDER BY si.visit_order ASC
+  `,
       [userId, scheduleId],
     );
 

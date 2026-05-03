@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import "./home.css";
 
-const CATEGORIES = [
-  "공원·자연",
-  "문화유산·역사",
-  "전시·박물관",
-  "문화공간·복합공간",
-  "전망·랜드마크",
-  "체험·놀이",
-  "야경",
-];
+const categoryMap = {
+  "공원·자연": "Nature",
+  "문화유산·역사": "History",
+  "전시·박물관": "Museums",
+  "문화공간·복합공간": "Cultural Districts",
+  "전망·랜드마크": "Landmarks",
+  "체험·놀이": "Theme Parks",
+  야경: "야경/뮤직",
+};
+
+const dbCategory = categoryMap[category.trim()] || category.trim();
 
 const IMAGE_BASE_URL = "http://localhost:5000/img";
 

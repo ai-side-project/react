@@ -26,9 +26,22 @@ router.get("/search", async (req, res) => {
         latitude, longitude, telephone, website, opening_hours, 
         business_days, closed_days, traffic_info_subway, main_image
       FROM places
-      WHERE name LIKE ? OR description LIKE ? OR address LIKE ? OR new_address LIKE ?
+      WHERE 
+        name LIKE ? 
+        OR summary LIKE ?
+        OR description LIKE ? 
+        OR address LIKE ? 
+        OR new_address LIKE ?
+        OR category_path_ko LIKE ?
       ORDER BY id DESC`,
-      [searchKeyword, searchKeyword, searchKeyword, searchKeyword],
+      [
+        searchKeyword,
+        searchKeyword,
+        searchKeyword,
+        searchKeyword,
+        searchKeyword,
+        searchKeyword,
+      ],
     );
     res.json(rows);
   } catch (error) {
@@ -43,18 +56,20 @@ router.get("/category", async (req, res) => {
   if (!category.trim()) return res.json([]);
 
   try {
+    const searchCategory = `%${category.trim()}%`;
+
     const [rows] = await pool.query(
       `SELECT 
-        p.id, p.name, p.summary, p.description, p.address, p.new_address,
-        p.latitude, p.longitude, p.telephone, p.opening_hours,
-        p.business_days, p.main_image
-      FROM places p
-      JOIN place_category_mapping pcm ON p.id = pcm.place_id
-      JOIN categories c ON pcm.category_id = c.id
-      WHERE c.name = ?
-      ORDER BY p.id DESC`,
-      [category.trim()],
+        id, name, summary, description, address, new_address,
+        latitude, longitude, telephone, website, opening_hours,
+        business_days, closed_days, traffic_info_subway, main_image,
+        category_path_ko
+      FROM places
+      WHERE category_path_ko LIKE ?
+      ORDER BY id DESC`,
+      [searchCategory],
     );
+
     res.json(rows);
   } catch (error) {
     console.error("카테고리 오류:", error);

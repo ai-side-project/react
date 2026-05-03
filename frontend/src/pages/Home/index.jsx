@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import "./home.css";
 
 const CATEGORIES = [
-  "공원·자연",
-  "문화유산·역사",
-  "전시·박물관",
-  "문화공간·복합공간",
-  "전망·랜드마크",
-  "체험·놀이",
-  "야경",
+  "역사관광",
+  "문화관광",
+  "음식",
+  "쇼핑",
+  "자연",
+  "숙박",
+  "체험 프로그램",
+  "축제/행사/공연",
 ];
 
 const IMAGE_BASE_URL = "http://localhost:5000/img";

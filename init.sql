@@ -56,14 +56,14 @@ CREATE TABLE places (
     traffic_info_subway TEXT,                    -- 지하철 정보 (subway_info)
     
     -- 연락처 및 웹사이트
-    telephone VARCHAR(100),                      -- 전화번호
-    website VARCHAR(500),                        -- 홈페이지
+    telephone VARCHAR(255),                      -- 전화번호
+    website VARCHAR(1000),                        -- 홈페이지
     website_lang JSON,                           -- [추가] 지원 언어 (website_lang)
     
     -- 이용 정보
     opening_hours TEXT,                          -- 이용시간 (use_time)
     closed_days TEXT,                            -- 휴무일
-    business_days VARCHAR(100),                  -- [추가] 영업일 (business_days)
+    business_days TEXT,                          -- [추가] 영업일 (business_days)
     is_free_code CHAR(1),                        -- 유/무료 코드 (fee_type: F/C)
     usage_fee TEXT,                              -- 요금 상세 (fee_guidance)
     important_notes TEXT,                        -- 유의사항 (important_info)

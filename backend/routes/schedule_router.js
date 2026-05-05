@@ -4,13 +4,13 @@ const pool = require("../db/db");
 
 // 일정 저장
 router.post("/", async (req, res) => {
-  const { schedule_title, visit_date, visit_time, memo, places } = req.body;
+  const { schedule_title, start_date, end_date, memo, places } = req.body;
 
   const userId = req.user?.id || req.session?.user?.id || 1;
 
-  if (!schedule_title || !visit_date || !visit_time) {
+  if (!schedule_title || !start_date || !end_date) {
     return res.status(400).json({
-      message: "일정 제목, 방문 날짜, 시작 시간이 필요합니다.",
+      message: "일정 제목, 여행 시작일, 여행 종료일이 필요합니다.",
     });
   }
 
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
       )
       VALUES (?, ?, ?, ?)
       `,
-      [userId, schedule_title, visit_date, visit_date],
+      [userId, schedule_title, start_date, end_date],
     );
 
     const scheduleId = scheduleResult.insertId;
@@ -47,8 +47,8 @@ router.post("/", async (req, res) => {
     const itemValues = places.map((place, index) => [
       scheduleId,
       place.place_id,
-      visit_date,
-      visit_time,
+      start_date,
+      null,
       place.visit_order || index + 1,
       memo || null,
     ]);
@@ -274,11 +274,17 @@ router.get("/:scheduleId", async (req, res) => {
 router.put("/:scheduleId", async (req, res) => {
   const userId = req.user?.id || req.session?.user?.id || 1;
   const { scheduleId } = req.params;
-  const { schedule_title, visit_date, visit_time, memo } = req.body;
+  const { schedule_title, start_date, end_date, memo } = req.body;
 
-  if (!schedule_title || !visit_date || !visit_time) {
+  if (!schedule_title || !start_date || !end_date) {
     return res.status(400).json({
-      message: "일정 제목, 방문 날짜, 시작 시간이 필요합니다.",
+      message: "일정 제목, 여행 시작일, 여행 종료일이 필요합니다.",
+    });
+  }
+
+  if (end_date < start_date) {
+    return res.status(400).json({
+      message: "여행 종료일을 다시 확인해 주세요.",
     });
   }
 
@@ -294,16 +300,16 @@ router.put("/:scheduleId", async (req, res) => {
       SET title = ?, start_date = ?, end_date = ?
       WHERE id = ? AND user_id = ?
       `,
-      [schedule_title, visit_date, visit_date, scheduleId, userId],
+      [schedule_title, start_date, end_date, scheduleId, userId],
     );
 
     await connection.query(
       `
       UPDATE schedule_items
-      SET visit_date = ?, visit_time = ?, memo = ?
+      SET visit_date = ?, visit_time = NULL, memo = ?
       WHERE schedule_id = ?
       `,
-      [visit_date, visit_time, memo || null, scheduleId],
+      [start_date, memo || null, scheduleId],
     );
 
     await connection.commit();

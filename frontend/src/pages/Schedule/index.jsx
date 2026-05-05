@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import "../Home/home.css";
 import "./schedule.css";
 
-const IMAGE_BASE_URL = "http://localhost:5000/img";
-
 const Schedule = () => {
   const [favorites, setFavorites] = useState([]);
   const [selectedPlaces, setSelectedPlaces] = useState([]);
@@ -33,6 +31,14 @@ const Schedule = () => {
       console.error("즐겨찾기 목록 조회 실패:", error);
       setFavorites([]);
     }
+  };
+
+  const getPlaceImage = (place) => {
+    if (Array.isArray(place.images) && place.images.length > 0) {
+      return place.images[0];
+    }
+
+    return "/images/default-place-image.png";
   };
 
   useEffect(() => {
@@ -223,11 +229,7 @@ const Schedule = () => {
                     >
                       <div className="place-image-wrap">
                         <img
-                          src={
-                            place.main_image_url
-                              ? `${IMAGE_BASE_URL}/${place.main_image_url}`
-                              : "/images/default-place-image.png"
-                          }
+                          src={getPlaceImage(place)}
                           alt={place.name}
                           className="place-image"
                         />
@@ -246,7 +248,9 @@ const Schedule = () => {
                       <div className="place-content">
                         <h3>{place.name}</h3>
                         <p className="place-address">
-                          {place.road_address || place.address}
+                          {place.new_address ||
+                            place.road_address ||
+                            place.address}
                         </p>
                         <p className="place-description">{place.description}</p>
 
@@ -323,7 +327,11 @@ const Schedule = () => {
                       <strong>
                         {index + 1}. {place.name}
                       </strong>
-                      <p>{place.road_address || place.address}</p>
+                      <p>
+                        {place.new_address ||
+                          place.road_address ||
+                          place.address}
+                      </p>
                     </div>
 
                     <button
@@ -363,10 +371,16 @@ const Schedule = () => {
 
               <div className="place-modal-images">
                 {selectedImages.length > 0 ? (
-                  selectedImages.map((image) => (
+                  selectedImages.map((image, index) => (
                     <img
-                      key={image.id}
-                      src={`${IMAGE_BASE_URL}/${image.image_url}`}
+                      key={index}
+                      src={
+                        typeof image === "string"
+                          ? image
+                          : image.url ||
+                            image.image_url ||
+                            "/images/default-place-image.png"
+                      }
                       alt={selectedPlace.name}
                       className="place-modal-image"
                     />
@@ -397,7 +411,11 @@ const Schedule = () => {
 
                   <div>
                     <dt>신주소</dt>
-                    <dd>{selectedPlace.road_address || "-"}</dd>
+                    <dd>
+                      {selectedPlace.new_address ||
+                        selectedPlace.road_address ||
+                        "-"}
+                    </dd>
                   </div>
 
                   <div>
@@ -429,7 +447,11 @@ const Schedule = () => {
 
                   <div>
                     <dt>운영요일</dt>
-                    <dd>{selectedPlace.operating_days || "-"}</dd>
+                    <dd>
+                      {selectedPlace.business_days ||
+                        selectedPlace.operating_days ||
+                        "-"}
+                    </dd>
                   </div>
 
                   <div>

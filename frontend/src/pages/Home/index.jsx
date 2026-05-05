@@ -1,47 +1,48 @@
-import { useEffect, useState } from "react"
-import "./home.css"
+import { useEffect, useState } from "react";
+import "./home.css";
 
 const CATEGORIES = [
-  "공원·자연",
-  "문화유산·역사",
-  "전시·박물관",
-  "문화공간·복합공간",
-  "전망·랜드마크",
-  "체험·놀이",
-  "야경",
-]
+  "역사관광",
+  "문화관광",
+  "음식",
+  "쇼핑",
+  "자연",
+  "숙박",
+  "체험 프로그램",
+  "축제/행사/공연",
+];
 
-const IMAGE_BASE_URL = "http://localhost:5000/img"
+const IMAGE_BASE_URL = "http://localhost:5000/img";
 
 const Home = () => {
-  const [keyword, setKeyword] = useState("")
-  const [activeCategory, setActiveCategory] = useState("")
-  const [results, setResults] = useState([])
-  const [hasSearched, setHasSearched] = useState(false)
-  const [searchMode, setSearchMode] = useState("")
-  const [selectedPlace, setSelectedPlace] = useState(null)
-  const [selectedImages, setSelectedImages] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [favoriteIds, setFavoriteIds] = useState([])
+  const [keyword, setKeyword] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
+  const [results, setResults] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [searchMode, setSearchMode] = useState("");
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [favoriteIds, setFavoriteIds] = useState([]);
 
-  const ITEMS_PER_PAGE = 6
+  const ITEMS_PER_PAGE = 6;
 
-  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE)
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const currentResults = results.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentResults = results.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleKeywordSearch = async () => {
-    const trimmedKeyword = keyword.trim()
+    const trimmedKeyword = keyword.trim();
 
-    setActiveCategory("")
-    setSearchMode("keyword")
-    setHasSearched(true)
-    setCurrentPage(1)
+    setActiveCategory("");
+    setSearchMode("keyword");
+    setHasSearched(true);
+    setCurrentPage(1);
 
     if (!trimmedKeyword) {
-      setResults([])
-      return
+      setResults([]);
+      return;
     }
 
     try {
@@ -49,110 +50,110 @@ const Home = () => {
         `http://localhost:5000/api/home/search?keyword=${encodeURIComponent(
           trimmedKeyword,
         )}`,
-      )
+      );
 
       if (!response.ok) {
-        throw new Error("검색 API 요청 실패")
+        throw new Error("검색 API 요청 실패");
       }
 
-      const data = await response.json()
-      setResults(data)
+      const data = await response.json();
+      setResults(data);
     } catch (error) {
-      console.error("검색 실패:", error)
-      setResults([])
+      console.error("검색 실패:", error);
+      setResults([]);
     }
-  }
+  };
 
   const handleCategorySearch = async (category) => {
-    setKeyword("")
-    setActiveCategory(category)
-    setSearchMode("category")
-    setHasSearched(true)
-    setCurrentPage(1)
+    setKeyword("");
+    setActiveCategory(category);
+    setSearchMode("category");
+    setHasSearched(true);
+    setCurrentPage(1);
 
     try {
       const response = await fetch(
         `http://localhost:5000/api/home/category?category=${encodeURIComponent(
           category,
         )}`,
-      )
+      );
 
       if (!response.ok) {
-        throw new Error("카테고리 검색 API 요청 실패")
+        throw new Error("카테고리 검색 API 요청 실패");
       }
 
-      const data = await response.json()
-      setResults(data)
+      const data = await response.json();
+      setResults(data);
     } catch (error) {
-      console.error("카테고리 검색 실패:", error)
-      setResults([])
+      console.error("카테고리 검색 실패:", error);
+      setResults([]);
     }
-  }
+  };
 
   const handlePlaceClick = async (placeId) => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/home/places/${placeId}`,
-      )
+      );
 
       if (!response.ok) {
-        throw new Error("장소 상세 조회 실패")
+        throw new Error("장소 상세 조회 실패");
       }
 
-      const data = await response.json()
+      const data = await response.json();
 
-      setSelectedImages(data.images)
-      setIsModalOpen(true)
-      setSelectedPlace(data.place)
+      setSelectedImages(data.images);
+      setIsModalOpen(true);
+      setSelectedPlace(data.place);
     } catch (error) {
-      console.error("장소 상세 조회 실패:", error)
+      console.error("장소 상세 조회 실패:", error);
     }
-  }
+  };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setSelectedPlace(null)
-    setSelectedImages([])
-  }
+    setIsModalOpen(false);
+    setSelectedPlace(null);
+    setSelectedImages([]);
+  };
 
   const handleReset = () => {
-    setKeyword("")
-    setActiveCategory("")
-    setResults([])
-    setHasSearched(false)
-    setSearchMode("")
-    setCurrentPage(1)
-  }
+    setKeyword("");
+    setActiveCategory("");
+    setResults([]);
+    setHasSearched(false);
+    setSearchMode("");
+    setCurrentPage(1);
+  };
 
   const handleKeywordKeyDown = (event) => {
     if (event.key === "Enter") {
-      handleKeywordSearch()
+      handleKeywordSearch();
     }
-  }
+  };
 
   const fetchFavorites = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/favorites", {
         credentials: "include",
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("즐겨찾기 목록 조회 실패")
+        throw new Error("즐겨찾기 목록 조회 실패");
       }
 
-      const data = await response.json()
-      setFavoriteIds(data.map((place) => place.id))
+      const data = await response.json();
+      setFavoriteIds(data.map((place) => place.id));
     } catch (error) {
-      console.error("즐겨찾기 목록 조회 실패:", error)
+      console.error("즐겨찾기 목록 조회 실패:", error);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchFavorites()
-  }, [])
+    fetchFavorites();
+  }, []);
 
   const handleToggleFavorite = async (place) => {
-    const isFavorite = favoriteIds.includes(place.id)
+    const isFavorite = favoriteIds.includes(place.id);
 
     try {
       const response = await fetch(
@@ -161,40 +162,40 @@ const Home = () => {
           method: isFavorite ? "DELETE" : "POST",
           credentials: "include",
         },
-      )
+      );
 
       if (!response.ok) {
-        throw new Error("즐겨찾기 처리 실패")
+        throw new Error("즐겨찾기 처리 실패");
       }
 
       if (isFavorite) {
-        setFavoriteIds((prev) => prev.filter((id) => id !== place.id))
+        setFavoriteIds((prev) => prev.filter((id) => id !== place.id));
       } else {
-        setFavoriteIds((prev) => [...prev, place.id])
+        setFavoriteIds((prev) => [...prev, place.id]);
       }
     } catch (error) {
-      console.error("즐겨찾기 처리 실패:", error)
-      alert("즐겨찾기 처리 중 문제가 발생했습니다.")
+      console.error("즐겨찾기 처리 실패:", error);
+      alert("즐겨찾기 처리 중 문제가 발생했습니다.");
     }
-  }
+  };
 
   const renderStatusText = () => {
     if (!hasSearched) {
-      return "장소명을 입력하거나 아래 카테고리를 선택해 여행지를 찾아보세요."
+      return "장소명을 입력하거나 아래 카테고리를 선택해 여행지를 찾아보세요.";
     }
 
     if (searchMode === "keyword") {
       return keyword.trim()
         ? `'${keyword.trim()}' 검색 결과입니다.`
-        : "검색어를 입력하면 장소명 기준으로 결과를 확인할 수 있습니다."
+        : "검색어를 입력하면 장소명 기준으로 결과를 확인할 수 있습니다.";
     }
 
     if (searchMode === "category" && activeCategory) {
-      return `'${activeCategory}' 카테고리 결과입니다.`
+      return `'${activeCategory}' 카테고리 결과입니다.`;
     }
 
-    return "검색 결과를 확인해보세요."
-  }
+    return "검색 결과를 확인해보세요.";
+  };
   return (
     <section className="home-page">
       <div className="container home-container">
@@ -308,15 +309,15 @@ const Home = () => {
                         alt={place.name}
                         className="place-image"
                         onError={(e) => {
-                          e.target.src = "/images/default-place-image.png"
+                          e.target.src = "/images/default-place-image.png";
                         }}
                       />
                       <button
                         type="button"
                         className={`favorite-button ${favoriteIds.includes(place.id) ? "active" : ""}`}
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleToggleFavorite(place)
+                          e.stopPropagation();
+                          handleToggleFavorite(place);
                         }}
                       >
                         {favoriteIds.includes(place.id) ? "♥" : "♡"}
@@ -348,7 +349,7 @@ const Home = () => {
                   </button>
                   {Array.from({ length: Math.min(10, totalPages) }, (_, i) => {
                     const pageNum =
-                      Math.floor((currentPage - 1) / 10) * 10 + i + 1
+                      Math.floor((currentPage - 1) / 10) * 10 + i + 1;
                     return pageNum <= totalPages ? (
                       <button
                         key={pageNum}
@@ -357,7 +358,7 @@ const Home = () => {
                       >
                         {pageNum}
                       </button>
-                    ) : null
+                    ) : null;
                   })}
                   <button
                     onClick={() => setCurrentPage((prev) => prev + 1)}
@@ -474,7 +475,7 @@ const Home = () => {
         )}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

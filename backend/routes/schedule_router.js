@@ -274,7 +274,7 @@ router.get("/:scheduleId", async (req, res) => {
 router.put("/:scheduleId", async (req, res) => {
   const userId = req.user?.id || req.session?.user?.id || 1;
   const { scheduleId } = req.params;
-  const { schedule_title, start_date, end_date, memo } = req.body;
+  const { schedule_title, start_date, end_date, memo, places } = req.body;
 
   if (!schedule_title || !start_date || !end_date) {
     return res.status(400).json({
@@ -285,6 +285,12 @@ router.put("/:scheduleId", async (req, res) => {
   if (end_date < start_date) {
     return res.status(400).json({
       message: "여행 종료일을 다시 확인해 주세요.",
+    });
+  }
+
+  if (!Array.isArray(places) || places.length === 0) {
+    return res.status(400).json({
+      message: "일정에 포함할 장소가 필요합니다.",
     });
   }
 
@@ -305,11 +311,35 @@ router.put("/:scheduleId", async (req, res) => {
 
     await connection.query(
       `
-      UPDATE schedule_items
-      SET visit_date = ?, visit_time = NULL, memo = ?
-      WHERE schedule_id = ?
+       DELETE FROM schedule_items
+       WHERE schedule_id = ?
       `,
-      [start_date, memo || null, scheduleId],
+      [scheduleId],
+    );
+
+    const itemValues = places.map((place, index) => [
+      scheduleId,
+      place.place_id,
+      start_date,
+      null,
+      place.visit_order || index + 1,
+      memo || null,
+    ]);
+
+    await connection.query(
+      `
+  INSERT INTO schedule_items
+  (
+    schedule_id,
+    place_id,
+    visit_date,
+    visit_time,
+    visit_order,
+    memo
+  )
+  VALUES ?
+  `,
+      [itemValues],
     );
 
     await connection.commit();

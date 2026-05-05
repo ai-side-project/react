@@ -7,8 +7,9 @@ const Dashboard = () => {
   const [openedScheduleId, setOpenedScheduleId] = useState(null);
   const [editingSchedule, setEditingSchedule] = useState(null);
   const [editTitle, setEditTitle] = useState("");
-  const [editDate, setEditDate] = useState("");
-  const [editTime, setEditTime] = useState("");
+  const [editStartDate, setEditStartDate] = useState("");
+  const [editEndDate, setEditEndDate] = useState("");
+  const [editPlaces, setEditPlaces] = useState([]);
   const [editMemo, setEditMemo] = useState("");
 
   const fetchSchedules = async () => {
@@ -63,17 +64,66 @@ const Dashboard = () => {
     setEditingSchedule(schedule);
 
     setEditTitle(schedule.schedule_title || "");
-    setEditDate(schedule.start_date ? schedule.start_date.slice(0, 10) : "");
-    setEditTime(schedule.places?.[0]?.visit_time?.slice(0, 5) || "");
+    setEditStartDate(
+      schedule.start_date ? schedule.start_date.slice(0, 10) : "",
+    );
+    setEditEndDate(schedule.end_date ? schedule.end_date.slice(0, 10) : "");
     setEditMemo(schedule.places?.[0]?.memo || "");
+
+    setEditPlaces(
+      (schedule.places || []).map((place, index) => ({
+        ...place,
+        visit_order: place.visit_order || index + 1,
+      })),
+    );
+  };
+
+  const handleRemoveEditPlace = (placeId) => {
+    setEditPlaces((prev) =>
+      prev
+        .filter((place) => place.place_id !== placeId)
+        .map((place, index) => ({
+          ...place,
+          visit_order: index + 1,
+        })),
+    );
+  };
+
+  const handleMoveEditPlaceUp = (index) => {
+    if (index === 0) return;
+
+    setEditPlaces((prev) => {
+      const copied = [...prev];
+      [copied[index - 1], copied[index]] = [copied[index], copied[index - 1]];
+
+      return copied.map((place, placeIndex) => ({
+        ...place,
+        visit_order: placeIndex + 1,
+      }));
+    });
+  };
+
+  const handleMoveEditPlaceDown = (index) => {
+    setEditPlaces((prev) => {
+      if (index === prev.length - 1) return prev;
+
+      const copied = [...prev];
+      [copied[index], copied[index + 1]] = [copied[index + 1], copied[index]];
+
+      return copied.map((place, placeIndex) => ({
+        ...place,
+        visit_order: placeIndex + 1,
+      }));
+    });
   };
 
   const handleCancelEdit = () => {
     setEditingSchedule(null);
     setEditTitle("");
-    setEditDate("");
-    setEditTime("");
+    setEditStartDate("");
+    setEditEndDate("");
     setEditMemo("");
+    setEditPlaces([]);
   };
 
   const handleUpdateSchedule = async () => {
@@ -84,13 +134,23 @@ const Dashboard = () => {
       return;
     }
 
-    if (!editDate) {
-      alert("방문 날짜를 선택해주세요.");
+    if (!editStartDate) {
+      alert("여행 시작일을 선택해주세요.");
       return;
     }
 
-    if (!editTime) {
-      alert("시작 시간을 선택해주세요.");
+    if (!editEndDate) {
+      alert("여행 종료일을 선택해주세요.");
+      return;
+    }
+
+    if (editEndDate < editStartDate) {
+      alert("여행 종료일을 확인해 주세요.");
+      return;
+    }
+
+    if (editPlaces.length === 0) {
+      alert("일정에 최소 1개 이상의 장소가 필요합니다.");
       return;
     }
 
@@ -105,15 +165,20 @@ const Dashboard = () => {
           credentials: "include",
           body: JSON.stringify({
             schedule_title: editTitle,
-            visit_date: editDate,
-            visit_time: editTime,
+            start_date: editStartDate,
+            end_date: editEndDate,
             memo: editMemo,
+            places: editPlaces.map((place, index) => ({
+              place_id: place.place_id,
+              visit_order: index + 1,
+            })),
           }),
         },
       );
 
       if (!response.ok) {
-        throw new Error("일정 수정 실패");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "일정 수정 실패");
       }
 
       alert("일정이 수정되었습니다.");
@@ -152,40 +217,95 @@ const Dashboard = () => {
             <div className="edit-schedule-box">
               <h3>일정 수정</h3>
 
-              <label>
-                일정 제목
-                <input
-                  type="text"
-                  value={editTitle}
-                  onChange={(event) => setEditTitle(event.target.value)}
-                />
-              </label>
+              <div className="edit-schedule-layout">
+                <div className="edit-schedule-left">
+                  <label>
+                    여행 시작일
+                    <input
+                      type="date"
+                      value={editStartDate}
+                      onChange={(event) => setEditStartDate(event.target.value)}
+                    />
+                  </label>
 
-              <label>
-                방문 날짜
-                <input
-                  type="date"
-                  value={editDate}
-                  onChange={(event) => setEditDate(event.target.value)}
-                />
-              </label>
+                  <label>
+                    여행 종료일
+                    <input
+                      type="date"
+                      value={editEndDate}
+                      onChange={(event) => setEditEndDate(event.target.value)}
+                    />
+                  </label>
 
-              <label>
-                시작 시간
-                <input
-                  type="time"
-                  value={editTime}
-                  onChange={(event) => setEditTime(event.target.value)}
-                />
-              </label>
+                  <label>
+                    메모
+                    <textarea
+                      value={editMemo}
+                      onChange={(event) => setEditMemo(event.target.value)}
+                      placeholder="메모를 입력하세요"
+                      rows={6}
+                    />
+                  </label>
+                </div>
 
-              <label>
-                메모
-                <textarea
-                  value={editMemo}
-                  onChange={(event) => setEditMemo(event.target.value)}
-                />
-              </label>
+                <div className="edit-schedule-right">
+                  <div className="edit-schedule-places-box">
+                    <h4>일정 장소</h4>
+
+                    {editPlaces.length === 0 ? (
+                      <p className="edit-place-empty">
+                        추가된 장소가 없습니다.
+                      </p>
+                    ) : (
+                      <div className="edit-place-list">
+                        {editPlaces.map((place, index) => (
+                          <div
+                            key={place.schedule_item_id || place.place_id}
+                            className="edit-place-item"
+                          >
+                            <div className="edit-place-info">
+                              <strong>
+                                {index + 1}. {place.name}
+                              </strong>
+                              <p>{place.road_address || place.address}</p>
+                            </div>
+
+                            <div className="edit-place-actions">
+                              <button
+                                type="button"
+                                aria-label="위로 이동"
+                                onClick={() => handleMoveEditPlaceUp(index)}
+                                disabled={index === 0}
+                              >
+                                ↑
+                              </button>
+
+                              <button
+                                type="button"
+                                aria-label="아래로 이동"
+                                onClick={() => handleMoveEditPlaceDown(index)}
+                                disabled={index === editPlaces.length - 1}
+                              >
+                                ↓
+                              </button>
+
+                              <button
+                                type="button"
+                                className="danger"
+                                onClick={() =>
+                                  handleRemoveEditPlace(place.place_id)
+                                }
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               <div className="edit-schedule-actions">
                 <button type="button" onClick={handleUpdateSchedule}>
@@ -214,10 +334,9 @@ const Dashboard = () => {
                     <div>
                       <h3>{schedule.schedule_title}</h3>
                       <p>
-                        {schedule.start_date?.slice(0, 10)} ·{" "}
-                        {schedule.places?.[0]?.visit_time?.slice(0, 5) ||
-                          "시간 미정"}{" "}
-                        · 장소 {schedule.places?.length || 0}개
+                        {schedule.start_date?.slice(0, 10)} ~{" "}
+                        {schedule.end_date?.slice(0, 10)} · 장소{" "}
+                        {schedule.places?.length || 0}개
                       </p>
 
                       {schedule.places?.[0]?.memo ? (

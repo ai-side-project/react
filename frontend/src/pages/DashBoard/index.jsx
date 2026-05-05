@@ -267,7 +267,11 @@ const Dashboard = () => {
                           <strong>
                             {place.visit_order}. {place.name}
                           </strong>
-                          <span>{place.road_address || place.address}</span>
+                          <span>
+                            {place.new_address ||
+                              place.road_address ||
+                              place.address}
+                          </span>
                         </li>
                       ))}
                     </ol>

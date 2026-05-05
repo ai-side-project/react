@@ -327,7 +327,11 @@ const Schedule = () => {
                       <strong>
                         {index + 1}. {place.name}
                       </strong>
-                      <p>{place.road_address || place.address}</p>
+                      <p>
+                        {place.new_address ||
+                          place.road_address ||
+                          place.address}
+                      </p>
                     </div>
 
                     <button
@@ -443,7 +447,11 @@ const Schedule = () => {
 
                   <div>
                     <dt>운영요일</dt>
-                    <dd>{selectedPlace.operating_days || "-"}</dd>
+                    <dd>
+                      {selectedPlace.business_days ||
+                        selectedPlace.operating_days ||
+                        "-"}
+                    </dd>
                   </div>
 
                   <div>

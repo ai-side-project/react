@@ -7,8 +7,8 @@ const Schedule = () => {
   const [selectedPlaces, setSelectedPlaces] = useState([]);
 
   const [scheduleTitle, setScheduleTitle] = useState("");
-  const [visitDate, setVisitDate] = useState("");
-  const [visitTime, setVisitTime] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [memo, setMemo] = useState("");
 
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -139,13 +139,18 @@ const Schedule = () => {
       return;
     }
 
-    if (!visitDate) {
-      alert("방문 날짜를 선택해주세요.");
+    if (!startDate) {
+      alert("여행 시작일을 선택해주세요.");
       return;
     }
 
-    if (!visitTime) {
-      alert("여행 시작 시간을 선택해주세요.");
+    if (!endDate) {
+      alert("여행 종료일을 선택해주세요.");
+      return;
+    }
+
+    if (endDate < startDate) {
+      alert("여행 종료일을 확인 해 주세요.");
       return;
     }
 
@@ -163,8 +168,8 @@ const Schedule = () => {
         credentials: "include",
         body: JSON.stringify({
           schedule_title: scheduleTitle,
-          visit_date: visitDate,
-          visit_time: visitTime,
+          start_date: startDate,
+          end_date: endDate,
           memo,
           places: selectedPlaces.map((place, index) => ({
             place_id: place.id,
@@ -180,8 +185,8 @@ const Schedule = () => {
       alert("일정이 저장되었습니다.");
       setSelectedPlaces([]);
       setScheduleTitle("");
-      setVisitDate("");
-      setVisitTime("");
+      setStartDate("");
+      setEndDate("");
       setMemo("");
     } catch (error) {
       console.error("일정 저장 실패:", error);
@@ -290,20 +295,20 @@ const Schedule = () => {
               </label>
 
               <label>
-                방문 날짜
+                여행 시작일
                 <input
                   type="date"
-                  value={visitDate}
-                  onChange={(event) => setVisitDate(event.target.value)}
+                  value={startDate}
+                  onChange={(event) => setStartDate(event.target.value)}
                 />
               </label>
 
               <label>
-                시작 시간
+                여행 종료일
                 <input
-                  type="time"
-                  value={visitTime}
-                  onChange={(event) => setVisitTime(event.target.value)}
+                  type="date"
+                  value={endDate}
+                  onChange={(event) => setEndDate(event.target.value)}
                 />
               </label>
 

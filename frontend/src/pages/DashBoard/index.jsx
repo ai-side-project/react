@@ -11,6 +11,10 @@ const Dashboard = () => {
   const [editEndDate, setEditEndDate] = useState("");
   const [editPlaces, setEditPlaces] = useState([]);
   const [editMemo, setEditMemo] = useState("");
+  const [placeSearchKeyword, setPlaceSearchKeyword] = useState("");
+  const [placeSearchResults, setPlaceSearchResults] = useState([]);
+  const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
+  const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
 
   const fetchSchedules = async () => {
     try {
@@ -124,6 +128,104 @@ const Dashboard = () => {
     setEditEndDate("");
     setEditMemo("");
     setEditPlaces([]);
+  };
+
+  const handleSearchPlacesForEdit = async () => {
+    if (!placeSearchKeyword.trim()) {
+      alert("검색어를 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/home/search?keyword=${encodeURIComponent(
+          placeSearchKeyword,
+        )}`,
+        {
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("장소 검색 실패");
+      }
+
+      const data = await response.json();
+      setPlaceSearchResults(data);
+    } catch (error) {
+      console.error("장소 검색 실패:", error);
+      alert("장소 검색 중 문제가 발생했습니다.");
+    }
+  };
+
+  const handleAddEditPlace = (place) => {
+    const alreadyAdded = editPlaces.some(
+      (editPlace) =>
+        editPlace.place_id === place.id ||
+        editPlace.place_id === place.place_id,
+    );
+
+    if (alreadyAdded) {
+      alert("이미 일정에 추가된 장소입니다.");
+      return;
+    }
+
+    setEditPlaces((prev) => [
+      ...prev,
+      {
+        ...place,
+        place_id: place.id || place.place_id,
+        visit_order: prev.length + 1,
+      },
+    ]);
+  };
+
+  const handleCancelAddedPlace = (placeId) => {
+    setEditPlaces((prev) =>
+      prev
+        .filter((place) => place.place_id !== placeId)
+        .map((place, index) => ({
+          ...place,
+          visit_order: index + 1,
+        })),
+    );
+  };
+
+  const handleOpenPlaceDetail = async (placeId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/home/places/${placeId}`,
+        {
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("장소 상세 조회 실패");
+      }
+
+      const data = await response.json();
+
+      setSelectedPlaceDetail({
+        ...data.place,
+        images: data.images || [],
+        main_image_url:
+          data.images?.[0]?.url ||
+          data.place?.main_image ||
+          data.place?.main_image_url ||
+          null,
+      });
+
+      setIsPlaceModalOpen(true);
+    } catch (error) {
+      console.error("장소 상세 조회 실패:", error);
+      alert("장소 상세 정보를 불러오는 중 문제가 발생했습니다.");
+    }
+  };
+
+  const handleClosePlaceModal = () => {
+    setSelectedPlaceDetail(null);
+    setIsPlaceModalOpen(false);
   };
 
   const handleUpdateSchedule = async () => {
@@ -251,6 +353,82 @@ const Dashboard = () => {
                 <div className="edit-schedule-right">
                   <div className="edit-schedule-places-box">
                     <h4>일정 장소</h4>
+                    <div className="edit-add-place-box">
+                      <h4>장소 추가</h4>
+                      <p className="edit-add-place-desc">
+                        전체 장소에서 검색해 일정에 추가할 수 있습니다.
+                      </p>
+
+                      <div className="edit-place-search">
+                        <input
+                          type="text"
+                          value={placeSearchKeyword}
+                          onChange={(event) =>
+                            setPlaceSearchKeyword(event.target.value)
+                          }
+                          placeholder="예: 경복궁, 한강, 박물관"
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                              handleSearchPlacesForEdit();
+                            }
+                          }}
+                        />
+
+                        <button
+                          type="button"
+                          onClick={handleSearchPlacesForEdit}
+                        >
+                          검색
+                        </button>
+                      </div>
+
+                      {placeSearchResults.length === 0 ? (
+                        <p className="edit-place-empty">
+                          검색 결과가 없습니다.
+                        </p>
+                      ) : (
+                        <div className="edit-add-place-list">
+                          {placeSearchResults.map((place) => {
+                            const alreadyAdded = editPlaces.some(
+                              (editPlace) => editPlace.place_id === place.id,
+                            );
+
+                            return (
+                              <div
+                                key={place.id}
+                                className="edit-add-place-item"
+                                onClick={() => handleOpenPlaceDetail(place.id)}
+                              >
+                                <div>
+                                  <strong>{place.name}</strong>
+                                  <p>
+                                    {place.road_address ||
+                                      place.new_address ||
+                                      place.address}
+                                  </p>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  className={alreadyAdded ? "cancel" : ""}
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+
+                                    if (alreadyAdded) {
+                                      handleCancelAddedPlace(place.id);
+                                    } else {
+                                      handleAddEditPlace(place);
+                                    }
+                                  }}
+                                >
+                                  {alreadyAdded ? "취소" : "추가"}
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
 
                     {editPlaces.length === 0 ? (
                       <p className="edit-place-empty">
@@ -262,6 +440,9 @@ const Dashboard = () => {
                           <div
                             key={place.schedule_item_id || place.place_id}
                             className="edit-place-item"
+                            onClick={() =>
+                              handleOpenPlaceDetail(place.place_id)
+                            }
                           >
                             <div className="edit-place-info">
                               <strong>
@@ -274,7 +455,10 @@ const Dashboard = () => {
                               <button
                                 type="button"
                                 aria-label="위로 이동"
-                                onClick={() => handleMoveEditPlaceUp(index)}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleMoveEditPlaceUp(index);
+                                }}
                                 disabled={index === 0}
                               >
                                 ↑
@@ -283,7 +467,10 @@ const Dashboard = () => {
                               <button
                                 type="button"
                                 aria-label="아래로 이동"
-                                onClick={() => handleMoveEditPlaceDown(index)}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleMoveEditPlaceDown(index);
+                                }}
                                 disabled={index === editPlaces.length - 1}
                               >
                                 ↓
@@ -292,9 +479,10 @@ const Dashboard = () => {
                               <button
                                 type="button"
                                 className="danger"
-                                onClick={() =>
-                                  handleRemoveEditPlace(place.place_id)
-                                }
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleRemoveEditPlace(place.place_id);
+                                }}
                               >
                                 삭제
                               </button>
@@ -382,7 +570,11 @@ const Dashboard = () => {
                   {openedScheduleId === schedule.schedule_id ? (
                     <ol className="saved-place-list">
                       {schedule.places.map((place) => (
-                        <li key={place.schedule_item_id || place.place_id}>
+                        <li
+                          key={place.schedule_item_id || place.place_id}
+                          className="saved-place-item"
+                          onClick={() => handleOpenPlaceDetail(place.place_id)}
+                        >
                           <strong>
                             {place.visit_order}. {place.name}
                           </strong>
@@ -401,6 +593,92 @@ const Dashboard = () => {
           )}
         </section>
       </div>
+      {isPlaceModalOpen && selectedPlaceDetail ? (
+        <div
+          className="place-detail-modal-overlay"
+          onClick={handleClosePlaceModal}
+        >
+          <div
+            className="place-detail-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="place-detail-close"
+              onClick={handleClosePlaceModal}
+            >
+              ×
+            </button>
+
+            <div className="place-detail-image-gallery">
+              {selectedPlaceDetail.images?.length > 0 ? (
+                selectedPlaceDetail.images
+                  .slice(0, 4)
+                  .map((image) => (
+                    <img
+                      key={image.id || image.url}
+                      src={image.url}
+                      alt={selectedPlaceDetail.name}
+                    />
+                  ))
+              ) : selectedPlaceDetail.main_image_url ? (
+                <img
+                  src={selectedPlaceDetail.main_image_url}
+                  alt={selectedPlaceDetail.name}
+                />
+              ) : (
+                <div className="place-detail-no-image">이미지 준비중</div>
+              )}
+            </div>
+
+            <div className="place-detail-content">
+              <h3>{selectedPlaceDetail.name}</h3>
+
+              <p className="place-detail-address">
+                {selectedPlaceDetail.new_address ||
+                  selectedPlaceDetail.road_address ||
+                  selectedPlaceDetail.address}
+              </p>
+
+              {selectedPlaceDetail.description ? (
+                <p className="place-detail-description">
+                  {selectedPlaceDetail.description}
+                </p>
+              ) : null}
+
+              <dl className="place-detail-info">
+                {selectedPlaceDetail.telephone ? (
+                  <>
+                    <dt>전화번호</dt>
+                    <dd>{selectedPlaceDetail.telephone}</dd>
+                  </>
+                ) : null}
+
+                {selectedPlaceDetail.opening_hours ? (
+                  <>
+                    <dt>운영시간</dt>
+                    <dd>{selectedPlaceDetail.opening_hours}</dd>
+                  </>
+                ) : null}
+
+                {selectedPlaceDetail.closed_days ? (
+                  <>
+                    <dt>휴무일</dt>
+                    <dd>{selectedPlaceDetail.closed_days}</dd>
+                  </>
+                ) : null}
+
+                {selectedPlaceDetail.usage_fee ? (
+                  <>
+                    <dt>이용요금</dt>
+                    <dd>{selectedPlaceDetail.usage_fee}</dd>
+                  </>
+                ) : null}
+              </dl>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 };

@@ -5,16 +5,17 @@
 .edit-schedule-box {
   margin-top: 20px;
   padding: 28px;
-  border: 1px solid #d9e2f1;
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: #f8fbff;
+  background: var(--card);
+  color: var(--text);
 }
 
 .edit-schedule-box h3 {
   margin-bottom: 20px;
   font-size: 28px;
   font-weight: 800;
-  color: #2f3a4a;
+  color: var(--text);
 }
 
 .edit-schedule-layout {
@@ -37,16 +38,17 @@
   flex-direction: column;
   gap: 10px;
   font-weight: 700;
-  color: #374151;
+  color: var(--text);
 }
 
 .edit-schedule-left input,
 .edit-schedule-left textarea {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid #d6deeb;
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--card);
+  color: var(--text);
   font-size: 15px;
 }
 
@@ -58,22 +60,16 @@
 .edit-schedule-places-box {
   height: 100%;
   padding: 18px;
-  border: 1px dashed #cfd9ea;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fff;
+  background: var(--card);
 }
 
 .edit-schedule-places-box h4 {
   margin-bottom: 14px;
   font-size: 20px;
   font-weight: 800;
-  color: #2f3a4a;
-}
-
-.edit-place-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  color: var(--text);
 }
 
 .edit-place-item {
@@ -82,22 +78,23 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
-  border: 1px solid #e2e8f5;
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: #f8fbff;
+  background: rgba(103, 137, 202, 0.05);
 }
 
 .edit-place-info strong {
   display: block;
-  margin-bottom: 6px;
-  font-size: 18px;
-  color: #2f3a4a;
+  margin-bottom: 5px;
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 800;
 }
 
 .edit-place-info p {
   margin: 0;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--muted);
   line-height: 1.5;
 }
 
@@ -107,79 +104,9 @@
   flex-shrink: 0;
 }
 
-.edit-place-actions button {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  padding: 0;
-  border: none;
-  border-radius: 10px;
-  background: #eef4ff;
-  color: #4f74d9;
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.edit-place-actions button:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.edit-place-actions button:not(.danger) {
-  color: #5b7fd6;
-  background: #eef4ff;
-  border: 1px solid #d7e3ff;
-}
-
-.edit-place-actions button:not(.danger):hover {
-  background: #dfeaff;
-}
-
-.edit-place-actions .danger {
-  width: auto;
-  min-width: auto;
-  padding: 0 14px;
-  background: #ffe5e5;
-  color: #ef4444;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.edit-schedule-bottom {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.edit-schedule-bottom .primary {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 14px;
-  background: #6c8fe8;
-  color: white;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.edit-schedule-bottom .secondary {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 14px;
-  background: #e9eef7;
-  color: #4b5563;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .empty-edit-places {
   margin: 0;
-  color: #94a3b8;
+  color: var(--muted);
   font-size: 14px;
 }
 
@@ -192,22 +119,6 @@
   list-style: none;
 }
 
-.edit-place-actions {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.edit-place-actions button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.edit-place-actions .danger {
-  background: #ffe1e1;
-  color: #e03131;
-}
-
 .edit-schedule-actions {
   display: flex;
   justify-content: flex-end;
@@ -218,18 +129,116 @@
 .edit-schedule-actions button {
   height: 42px;
   padding: 0 18px;
-  border: none;
+  border: 1px solid var(--primary);
   border-radius: 12px;
-  background: #6c8fe8;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;
 }
 
-.edit-schedule-actions button:last-child {
-  background: #e9eef7;
-  color: #4b5563;
+.edit-add-place-box {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px dashed var(--border);
+  border-radius: 18px;
+  background: var(--card);
+}
+
+.edit-add-place-box h4 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.edit-add-place-desc {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.edit-place-search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.edit-place-search input {
+  flex: 1;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.edit-place-search button {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.edit-place-item,
+.edit-add-place-item {
+  cursor: pointer;
+}
+
+.edit-add-place-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.edit-add-place-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(103, 137, 202, 0.05);
+}
+
+.edit-add-place-item strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.edit-add-place-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.edit-add-place-item button {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--primary-weak);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.edit-add-place-item button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .saved-schedule-list {
@@ -242,7 +251,7 @@
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: #ffffff;
+  background: var(--card);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
 }
 
@@ -275,30 +284,11 @@
   flex-shrink: 0;
 }
 
-.saved-schedule-actions button {
-  height: 34px;
-  padding: 0 12px;
-  border: none;
-  border-radius: 10px;
-  background: var(--primary-weak);
-  color: var(--primary);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.saved-schedule-actions button.danger {
-  background: #fee2e2;
-  color: #dc2626;
-  font-size: 14px;
-  font-weight: 700;
-}
-
 .saved-place-list {
   margin: 16px 0 0;
   padding: 14px 18px;
   border-radius: 14px;
-  background: #f8fafc;
+  background: rgba(103, 137, 202, 0.05);
   color: var(--text);
 }
 
@@ -308,7 +298,7 @@
   gap: 4px;
   margin: 8px 0;
   padding: 10px 0;
-  border-bottom: 1px solid #e5eaf2;
+  border-bottom: 1px solid var(--border);
   color: var(--muted);
   font-size: 14px;
 }
@@ -319,6 +309,248 @@
 
 .saved-place-list strong {
   color: var(--text);
+}
+
+.saved-place-item {
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.saved-place-item:hover {
+  background: rgba(103, 137, 202, 0.08);
+  transform: translateY(-1px);
+}
+
+.place-detail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.place-detail-modal {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.25);
+}
+
+.place-detail-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.place-detail-no-image {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.place-detail-image-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 18px 18px 0;
+}
+
+.place-detail-image-gallery img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.place-detail-image-gallery .place-detail-no-image {
+  grid-column: 1 / -1;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--primary-weak);
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.place-detail-content {
+  padding: 24px;
+}
+
+.place-detail-content h3 {
+  margin: 0 0 10px;
+  font-size: 26px;
+  color: var(--text);
+}
+
+.place-detail-address {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.place-detail-description {
+  margin: 0 0 20px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.place-detail-info {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px 14px;
+  margin: 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(103, 137, 202, 0.05);
+}
+
+.place-detail-info dt {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.place-detail-info dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+.edit-place-item:hover,
+.edit-add-place-item:hover {
+  background: rgba(103, 137, 202, 0.08);
+  border-color: rgba(103, 137, 202, 0.28);
+}
+
+/* 위/아래 버튼 */
+.edit-place-actions button {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--primary-weak);
+  color: var(--primary);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.edit-place-actions button:hover:not(:disabled) {
+  background: rgba(103, 137, 202, 0.22);
+  border-color: rgba(103, 137, 202, 0.26);
+}
+
+.edit-place-actions button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* 삭제 버튼 */
+.edit-place-actions .danger,
+.saved-schedule-actions button.danger {
+  width: auto;
+  min-width: auto;
+  padding: 0 13px;
+  background: var(--danger-weak);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-border);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.edit-place-actions .danger:hover,
+.saved-schedule-actions button.danger:hover {
+  background: rgba(194, 75, 90, 0.18);
+  border-color: var(--danger);
+}
+
+/* 일정 카드 버튼 */
+.saved-schedule-actions button {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--primary-weak);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.saved-schedule-actions button:hover {
+  background: rgba(103, 137, 202, 0.22);
+  border-color: rgba(103, 137, 202, 0.26);
+}
+
+/* 수정 완료 / 취소 */
+.edit-schedule-actions button {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.edit-schedule-actions button:hover,
+.edit-place-search button:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.edit-schedule-actions button:last-child {
+  border-color: var(--border);
+  background: var(--primary-weak);
+  color: var(--text);
+}
+
+.edit-schedule-actions button:last-child:hover {
+  background: rgba(103, 137, 202, 0.18);
+  border-color: var(--border);
+}
+
+/* 장소 추가 버튼 */
+.edit-add-place-item button {
+  border: 1px solid transparent;
+  background: var(--primary-weak);
+  color: var(--primary);
+}
+
+.edit-add-place-item button:hover:not(:disabled) {
+  background: rgba(103, 137, 202, 0.22);
+}
+
+.edit-add-place-item button.cancel {
+  background: var(--danger-weak);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+
+.edit-add-place-item button.cancel:hover {
+  background: rgba(194, 75, 90, 0.18);
 }
 
 @media (max-width: 900px) {
@@ -333,5 +565,15 @@
   .edit-place-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  .place-detail-image-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .place-detail-image-gallery img {
+    height: 140px;
   }
 }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./scheduleAnalysis.css";
 
@@ -5,44 +6,74 @@ const ScheduleAnalysis = () => {
   const { scheduleId } = useParams();
   const navigate = useNavigate();
 
-  const schedule = {
-    schedule_title: "박물관 경복궁 청계천",
-    start_date: "2026-05-09",
-    end_date: "2026-05-10",
-    places: [
-      {
-        place_id: 1,
-        name: "국립고궁박물관",
-        address: "서울 종로구 효자로 12",
-      },
-      {
-        place_id: 2,
-        name: "경복궁",
-        address: "서울 종로구 사직로 161",
-      },
-      {
-        place_id: 3,
-        name: "청계천",
-        address: "서울 종로구 무교로 37",
-      },
-    ],
+  const [schedule, setSchedule] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchAnalysis = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/schedules/${scheduleId}/analysis`,
+        {
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("AI 분석 조회 실패");
+      }
+
+      const data = await response.json();
+
+      setSchedule(data.schedule);
+      setAnalysis(data.analysis);
+    } catch (error) {
+      console.error("AI 분석 조회 실패:", error);
+      alert("AI 분석 결과를 불러오는 중 문제가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const analysis = {
-    summary: "역사와 문화 중심의 서울 여행 일정입니다.",
-    routeFeedback: "종로권 장소가 많아 이동 부담이 낮은 편입니다.",
-    difficulty: "보통",
-    goodPoints: ["컨셉이 명확합니다.", "장소 구성이 자연스럽습니다."],
-    improvements: [
-      "야외 장소 방문 전 날씨를 확인하면 좋습니다.",
-      "관람 시간이 긴 장소는 여유 시간을 확보하는 것이 좋습니다.",
-    ],
-    recommendedTitles: [
-      "종로 역사문화 산책",
-      "경복궁과 박물관 코스",
-      "서울 전통문화 여행",
-    ],
-  };
+  useEffect(() => {
+    fetchAnalysis();
+  }, [scheduleId]);
+
+  if (isLoading) {
+    return (
+      <section className="analysis-page">
+        <div className="container analysis-container">
+          <div className="analysis-hero">
+            <p className="analysis-eyebrow">AI TRAVEL FEEDBACK</p>
+            <h1>AI 여행 일정 분석 중...</h1>
+            <p>Ollama가 여행 일정을 분석하고 있습니다.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!schedule || !analysis) {
+    return (
+      <section className="analysis-page">
+        <div className="container analysis-container">
+          <button
+            type="button"
+            className="analysis-back-button"
+            onClick={() => navigate("/dashboard")}
+          >
+            ← 대시보드로 돌아가기
+          </button>
+
+          <div className="analysis-hero">
+            <p className="analysis-eyebrow">AI TRAVEL FEEDBACK</p>
+            <h1>분석 결과를 불러올 수 없습니다</h1>
+            <p>잠시 후 다시 시도해주세요.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="analysis-page">
@@ -119,7 +150,7 @@ const ScheduleAnalysis = () => {
             <div className="feedback-block">
               <h3>좋은 점</h3>
               <ul>
-                {analysis.goodPoints.map((item, index) => (
+                {(analysis.goodPoints || []).map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
@@ -128,7 +159,7 @@ const ScheduleAnalysis = () => {
             <div className="feedback-block">
               <h3>개선 추천</h3>
               <ul>
-                {analysis.improvements.map((item, index) => (
+                {(analysis.improvements || []).map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
@@ -137,7 +168,7 @@ const ScheduleAnalysis = () => {
             <div className="feedback-block">
               <h3>추천 제목</h3>
               <ul>
-                {analysis.recommendedTitles.map((item, index) => (
+                {(analysis.recommendedTitles || []).map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>

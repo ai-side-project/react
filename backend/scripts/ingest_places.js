@@ -3,8 +3,7 @@ const fs = require("fs")
 const path = require("path")
 
 async function run() {
-  // 파일명이 data.json인지 데이터_6.json인지 꼭 확인해서 수정하세요!
-  const jsonPath = path.join(__dirname, "data.json")
+  const jsonPath = path.join(__dirname, "nature.json")
   const rawData = fs.readFileSync(jsonPath, "utf8")
   const places = JSON.parse(rawData).data
 

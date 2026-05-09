@@ -322,6 +322,16 @@ const Dashboard = () => {
               <div className="edit-schedule-layout">
                 <div className="edit-schedule-left">
                   <label>
+                    일정 제목
+                    <input
+                      type="text"
+                      value={editTitle}
+                      onChange={(event) => setEditTitle(event.target.value)}
+                      placeholder="예: 한강 산책 코스"
+                    />
+                  </label>
+
+                  <label>
                     여행 시작일
                     <input
                       type="date"

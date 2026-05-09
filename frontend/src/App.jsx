@@ -16,6 +16,7 @@ import Join from "./components/auth/Join";
 import Detail from "./pages/Board/detail";
 import Schedule from "./pages/Schedule";
 import Dashboard from "./pages/Dashboard";
+import ScheduleAnalysis from "./pages/ScheduleAnalysis";
 
 // 1. 스타일드 컴포넌트 및 전역 스타일 임포트
 import GlobalStyle from "./styles/Globalstyle";
@@ -70,6 +71,10 @@ function App() {
           <Route
             path="/admin"
             element={user?.isadmin ? <Admin /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/dashboard/schedules/:scheduleId/analysis"
+            element={<ScheduleAnalysis />}
           />
         </Routes>
       </MainContent>

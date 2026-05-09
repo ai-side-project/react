@@ -17,6 +17,7 @@ const passportConfig = require("./passport");
 const { RedisStore } = require("connect-redis");
 const favoriteRouter = require("./routes/favorite_router");
 const scheduleRouter = require("./routes/schedule_router");
+const scheduleAnalysisRouter = require("./routes/scheduleanalysis_router");
 
 //const { createClient } = require("redis")
 //const redisClient = createClient()
@@ -103,6 +104,7 @@ app.use("/api/home", homeRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/favorites", favoriteRouter);
+app.use("/api/schedules", scheduleAnalysisRouter);
 app.use("/api/schedules", scheduleRouter);
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter);

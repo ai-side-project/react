@@ -5,6 +5,10 @@ import "./schedule.css";
 const Schedule = () => {
   const [favorites, setFavorites] = useState([]);
   const [selectedPlaces, setSelectedPlaces] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 6;
+  const MAX_PAGE_BUTTONS = 10;
 
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -27,6 +31,7 @@ const Schedule = () => {
 
       const data = await response.json();
       setFavorites(data);
+      setCurrentPage(1);
     } catch (error) {
       console.error("즐겨찾기 목록 조회 실패:", error);
       setFavorites([]);
@@ -44,6 +49,24 @@ const Schedule = () => {
   useEffect(() => {
     fetchFavorites();
   }, []);
+
+  const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentFavorites = favorites.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
+
+  const currentPageGroup = Math.ceil(currentPage / MAX_PAGE_BUTTONS);
+  const startPage = (currentPageGroup - 1) * MAX_PAGE_BUTTONS + 1;
+  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, totalPages);
+
+  const pageNumbers = [];
+
+  for (let i = startPage; i <= endPage; i += 1) {
+    pageNumbers.push(i);
+  }
 
   const handlePlaceClick = async (placeId) => {
     try {
@@ -117,7 +140,16 @@ const Schedule = () => {
         throw new Error("즐겨찾기 해제 실패");
       }
 
-      setFavorites((prev) => prev.filter((place) => place.id !== placeId));
+      setFavorites((prev) => {
+        const nextFavorites = prev.filter((place) => place.id !== placeId);
+        const nextTotalPages = Math.ceil(nextFavorites.length / ITEMS_PER_PAGE);
+
+        if (currentPage > nextTotalPages) {
+          setCurrentPage(Math.max(nextTotalPages, 1));
+        }
+
+        return nextFavorites;
+      });
 
       setSelectedPlaces((prev) =>
         prev
@@ -225,58 +257,92 @@ const Schedule = () => {
                   <p>홈에서 마음에 드는 여행지를 하트로 저장해보세요.</p>
                 </div>
               ) : (
-                <div className="results-grid">
-                  {favorites.map((place) => (
-                    <article
-                      key={place.id}
-                      className="place-card"
-                      onClick={() => handlePlaceClick(place.id)}
-                    >
-                      <div className="place-image-wrap">
-                        <img
-                          src={getPlaceImage(place)}
-                          alt={place.name}
-                          className="place-image"
-                        />
+                <>
+                  <div className="results-grid">
+                    {currentFavorites.map((place) => (
+                      <article
+                        key={place.id}
+                        className="place-card"
+                        onClick={() => handlePlaceClick(place.id)}
+                      >
+                        <div className="place-image-wrap">
+                          <img
+                            src={getPlaceImage(place)}
+                            alt={place.name}
+                            className="place-image"
+                          />
+                          <button
+                            type="button"
+                            className="favorite-button active"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleRemoveFavorite(place.id);
+                            }}
+                          >
+                            ♥
+                          </button>
+                        </div>
+
+                        <div className="place-content">
+                          <h3>{place.name}</h3>
+                          <p className="place-address">
+                            {place.new_address ||
+                              place.road_address ||
+                              place.address}
+                          </p>
+                          <p className="place-description">
+                            {place.description}
+                          </p>
+
+                          <button
+                            type="button"
+                            className="add-schedule-button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleAddToSchedule(place);
+                            }}
+                          >
+                            일정에 추가
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="pagination">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentPage(startPage - 1)}
+                        disabled={startPage === 1}
+                      >
+                        이전
+                      </button>
+
+                      {pageNumbers.map((page) => (
                         <button
                           type="button"
-                          className="favorite-button active"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleRemoveFavorite(place.id);
-                          }}
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={currentPage === page ? "active" : ""}
                         >
-                          ♥
+                          {page}
                         </button>
-                      </div>
+                      ))}
 
-                      <div className="place-content">
-                        <h3>{place.name}</h3>
-                        <p className="place-address">
-                          {place.new_address ||
-                            place.road_address ||
-                            place.address}
-                        </p>
-                        <p className="place-description">{place.description}</p>
-
-                        <button
-                          type="button"
-                          className="add-schedule-button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleAddToSchedule(place);
-                          }}
-                        >
-                          일정에 추가
-                        </button>
-                      </div>
-                    </article>
-                  ))}
-                </div>
+                      <button
+                        type="button"
+                        onClick={() => setCurrentPage(endPage + 1)}
+                        disabled={endPage === totalPages}
+                      >
+                        다음
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </section>
           </div>
-
           <section className="schedule-panel">
             <div className="schedule-panel-header">
               <h2>나의 새 일정</h2>

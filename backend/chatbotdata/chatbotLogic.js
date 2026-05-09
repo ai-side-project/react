@@ -3,10 +3,44 @@ const axios = require("axios")
 
 const FASTAPI_URL = "http://host.docker.internal:8000/chatbot/"
 
+/**
+ * AI 상담원(FastAPI) 호출을 담당하는 보조 함수
+ */
+async function callAiAgent(userId, message) {
+  try {
+    console.log(`[AI 호출] -> FastAPI(Ollama) 요청 전송: ${message}`)
+    const response = await axios.post(FASTAPI_URL, {
+      message: message,
+      userId: userId,
+    })
+    // FastAPI로부터 받은 답변 반환
+    return ` [AI 가이드]: ${response.data.result}`
+  } catch (error) {
+    console.error("❌ FastAPI 연결 실패:", error.message)
+    return SCENARIOS.unknown(message)
+  }
+}
+
 const getBotResponse = async (userId, message) => {
-  // 1. 입력값 정제
+  // 1. 입력값 정제 (공백 제거 버전)
   const msg = message.trim().replace(/ /g, "")
-  console.log("현재 입력된 메시지:", msg)
+
+  // [수정 핵심] 날짜나 구체적인 지명이 포함되어 있다면 시나리오를 건너뛰고 AI 호출
+  // 정규식: 'n월' 또는 'n일' 또는 '202x년' 포함 여부 확인
+  const hasDate = /\d{1,2}월|\d{1,2}일|202\d/.test(message)
+
+  // 구체적인 장소 키워드 (여기에 검색을 원하는 장소를 추가하세요)
+  const isSpecificQuery =
+    msg.includes("경복궁") ||
+    msg.includes("강남") ||
+    msg.includes("광화문") ||
+    msg.includes("도봉") ||
+    hasDate
+
+  if (isSpecificQuery) {
+    console.log(`[AI 우선순위] 구체적 질문 감지 -> AI 답변으로 이동`)
+    return await callAiAgent(userId, message)
+  }
 
   // 2. 고정 시나리오 체크 (가장 먼저 수행)
   // 메인 메뉴
@@ -17,7 +51,7 @@ const getBotResponse = async (userId, message) => {
   )
     return SCENARIOS.welcome
 
-  // 대분류
+  // 대분류 (일반적인 단축 번호나 메뉴명 클릭 시)
   if (msg.includes("1") || msg.includes("추천") || msg.includes("여행지"))
     return SCENARIOS.recommend_main
   if (msg.includes("2") || msg.includes("코스") || msg.includes("인기"))
@@ -54,19 +88,8 @@ const getBotResponse = async (userId, message) => {
   if (["ㅡㅡ", "-_-", "짜증", "바보", "답답"].some((k) => msg.includes(k)))
     return SCENARIOS.angry
 
-  // 3. 위 조건에 하나도 걸리지 않았을 때만 AI 상담원(FastAPI) 호출
-  // 명시적으로 '4'번을 눌렀거나, 상담원 연결을 요청한 경우도 포함됨
-  try {
-    console.log(`[규칙 없음] -> FastAPI(Ollama) 요청 전송: ${message}`)
-    const response = await axios.post(FASTAPI_URL, {
-      message: message,
-      userId: userId,
-    })
-    return ` [AI 가이드]: ${response.data.result}`
-  } catch (error) {
-    console.error("❌ FastAPI 연결 실패:", error.message)
-    return SCENARIOS.unknown(message)
-  }
+  // 3. 위 조건에 하나도 걸리지 않았을 때 (기타 질문) AI 상담원 호출
+  return await callAiAgent(userId, message)
 }
 
 module.exports = { getBotResponse }

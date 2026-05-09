@@ -15,7 +15,7 @@
   position: sticky;
   top: 100px;
   padding: 22px;
-  background: #ffffff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
@@ -57,7 +57,14 @@
   padding: 12px;
   color: var(--text);
   font-size: 14px;
-  background: #ffffff;
+  background: var(--card);
+}
+
+.schedule-form input:focus,
+.schedule-form textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-weak);
 }
 
 .schedule-form textarea {
@@ -68,9 +75,9 @@
 .schedule-empty {
   margin-top: 18px;
   padding: 18px;
-  border: 1px dashed #d7dee8;
+  border: 1px dashed var(--border);
   border-radius: 14px;
-  background: #fbfcfe;
+  background: rgba(103, 137, 202, 0.05);
   color: var(--muted);
   font-size: 14px;
   text-align: center;
@@ -90,7 +97,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--primary-weak);
 }
@@ -111,19 +118,25 @@
   flex-shrink: 0;
   height: 32px;
   padding: 0 10px;
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 9px;
-  background: #ffffff;
-  color: #64748b;
+  background: var(--card);
+  color: var(--muted);
   font-weight: 700;
   cursor: pointer;
+}
+
+.schedule-item button:hover {
+  background: rgba(103, 137, 202, 0.08);
+  color: var(--primary);
+  border-color: rgba(103, 137, 202, 0.28);
 }
 
 .add-schedule-button {
   width: 100%;
   height: 38px;
   margin-top: 14px;
-  border: none;
+  border: 1px solid var(--primary);
   border-radius: 10px;
   background: var(--primary);
   color: var(--on-primary);
@@ -132,17 +145,27 @@
   cursor: pointer;
 }
 
+.add-schedule-button:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
 .schedule-save-button {
   width: 100%;
   height: 46px;
   margin-top: 18px;
-  border: none;
+  border: 1px solid var(--primary);
   border-radius: 12px;
   background: var(--primary);
   color: var(--on-primary);
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;
+}
+
+.schedule-save-button:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 @media (max-width: 1024px) {

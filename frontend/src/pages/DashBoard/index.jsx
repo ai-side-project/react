@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Home/home.css";
 import "./dashboard.css";
 
@@ -15,6 +16,8 @@ const Dashboard = () => {
   const [placeSearchResults, setPlaceSearchResults] = useState([]);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
   const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const fetchSchedules = async () => {
     try {
@@ -556,6 +559,18 @@ const Dashboard = () => {
                         }
                       >
                         상세보기
+                      </button>
+
+                      <button
+                        type="button"
+                        className="ai-analysis-button"
+                        onClick={() =>
+                          navigate(
+                            `/dashboard/schedules/${schedule.schedule_id}/analysis`,
+                          )
+                        }
+                      >
+                        AI 분석
                       </button>
 
                       <button

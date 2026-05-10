@@ -2,9 +2,19 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db/db");
 
+const getLoginUserId = (req) => {
+  return req.user?.id || req.session?.user?.id || req.session?.user?.user_id;
+};
+
 // 즐겨찾기 목록 조회
 router.get("/", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+  const userId = getLoginUserId(req);
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "로그인이 필요합니다.",
+    });
+  }
 
   try {
     const [rows] = await pool.query(
@@ -51,9 +61,10 @@ LEFT JOIN (
   ON p.id = pi.place_id
 WHERE uf.user_id = ?
 ORDER BY uf.created_at DESC
-  `,
+      `,
       [userId],
     );
+
     res.json(rows);
   } catch (error) {
     console.error("즐겨찾기 목록 조회 실패:", error);
@@ -65,8 +76,14 @@ ORDER BY uf.created_at DESC
 
 // 즐겨찾기 추가
 router.post("/:placeId", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+  const userId = getLoginUserId(req);
   const { placeId } = req.params;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "로그인이 필요합니다.",
+    });
+  }
 
   try {
     await pool.query(
@@ -91,8 +108,14 @@ router.post("/:placeId", async (req, res) => {
 
 // 즐겨찾기 삭제
 router.delete("/:placeId", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+  const userId = getLoginUserId(req);
   const { placeId } = req.params;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "로그인이 필요합니다.",
+    });
+  }
 
   try {
     await pool.query(

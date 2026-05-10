@@ -137,6 +137,11 @@ const Home = () => {
         credentials: "include",
       });
 
+      if (response.status === 401) {
+        setFavoriteIds([]);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error("즐겨찾기 목록 조회 실패");
       }
@@ -145,9 +150,9 @@ const Home = () => {
       setFavoriteIds(data.map((place) => place.id));
     } catch (error) {
       console.error("즐겨찾기 목록 조회 실패:", error);
+      setFavoriteIds([]);
     }
   };
-
   useEffect(() => {
     fetchFavorites();
   }, []);
@@ -164,8 +169,16 @@ const Home = () => {
         },
       );
 
+      const data = await response.json().catch(() => null);
+
+      if (response.status === 401) {
+        alert("로그인 후 즐겨찾기를 이용할 수 있습니다.");
+        return;
+      }
+
       if (!response.ok) {
-        throw new Error("즐겨찾기 처리 실패");
+        alert(data?.message || "즐겨찾기 처리 중 문제가 발생했습니다.");
+        return;
       }
 
       if (isFavorite) {

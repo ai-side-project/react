@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import ChromaManager from "./chromaManager"
-import UserManager from "./UserManager"
+import UserManager from "./userManager"
 
 const Admin = () => {
   const [activeMenu, setActiveMenu] = useState("chroma")

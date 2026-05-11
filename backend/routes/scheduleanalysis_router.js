@@ -1,10 +1,10 @@
-const express = require("express");
-const db = require("../db/db");
+const express = require("express")
+const db = require("../db/db")
 
-const router = express.Router();
+const router = express.Router()
 
 router.get("/:scheduleId/analysis", async (req, res) => {
-  const { scheduleId } = req.params;
+  const { scheduleId } = req.params
 
   try {
     // 1. 일정 기본 정보 조회
@@ -20,15 +20,15 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       WHERE id = ?
       `,
       [scheduleId],
-    );
+    )
 
     if (scheduleRows.length === 0) {
       return res.status(404).json({
         message: "일정을 찾을 수 없습니다.",
-      });
+      })
     }
 
-    const schedule = scheduleRows[0];
+    const schedule = scheduleRows[0]
 
     // 2. 일정에 포함된 장소 목록 조회
     const [placeRows] = await db.query(
@@ -49,7 +49,7 @@ router.get("/:scheduleId/analysis", async (req, res) => {
   ORDER BY sp.visit_order ASC
   `,
       [scheduleId],
-    );
+    )
 
     const places = placeRows.map((place) => ({
       place_id: place.place_id,
@@ -61,7 +61,7 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       address: place.new_address || place.address,
       description: place.description,
       category: "기타",
-    }));
+    }))
 
     // 3. Ollama 프롬프트 만들기
     const prompt = `
@@ -106,7 +106,7 @@ ${places
 difficulty는 쉬움, 보통, 어려움 중 하나만 써.
 scores의 값은 1부터 5 사이 숫자로만 써.
 recommendedOrder는 장소 목록 안의 장소만 사용해.
-`;
+`
     // 4. Ollama 호출
     const ollamaResponse = await fetch(
       "http://host.docker.internal:11434/api/generate",
@@ -126,30 +126,30 @@ recommendedOrder는 장소 목록 안의 장소만 사용해.
           },
         }),
       },
-    );
+    )
 
     if (!ollamaResponse.ok) {
-      throw new Error("Ollama 분석 요청 실패");
+      throw new Error("Ollama 분석 요청 실패")
     }
 
-    const ollamaData = await ollamaResponse.json();
+    const ollamaData = await ollamaResponse.json()
 
-    let analysis;
+    let analysis
 
     try {
-      const rawResponse = ollamaData.response.trim();
+      const rawResponse = ollamaData.response.trim()
 
-      const jsonStart = rawResponse.indexOf("{");
-      const jsonEnd = rawResponse.lastIndexOf("}");
+      const jsonStart = rawResponse.indexOf("{")
+      const jsonEnd = rawResponse.lastIndexOf("}")
 
       const jsonText =
         jsonStart !== -1 && jsonEnd !== -1
           ? rawResponse.slice(jsonStart, jsonEnd + 1)
-          : rawResponse;
+          : rawResponse
 
-      analysis = JSON.parse(jsonText);
+      analysis = JSON.parse(jsonText)
     } catch (parseError) {
-      console.error("Ollama JSON 파싱 실패:", parseError);
+      console.error("Ollama JSON 파싱 실패:", parseError)
 
       analysis = {
         summary: ollamaData.response,
@@ -170,7 +170,7 @@ recommendedOrder는 장소 목록 안의 장소만 사용해.
           name: place.name,
           reason: "기존 방문 순서를 유지합니다.",
         })),
-      };
+      }
     }
 
     res.json({
@@ -179,13 +179,13 @@ recommendedOrder는 장소 목록 안의 장소만 사용해.
         places,
       },
       analysis,
-    });
+    })
   } catch (error) {
-    console.error("AI 일정 분석 실패:", error);
+    console.error("AI 일정 분석 실패:", error)
     res.status(500).json({
       message: "AI 일정 분석 중 문제가 발생했습니다.",
-    });
+    })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Home/home.css";
 import "./dashboard.css";
@@ -18,12 +18,27 @@ const Dashboard = () => {
   const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
 
   const navigate = useNavigate();
+  const hasShownLoginAlert = useRef(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const fetchSchedules = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/schedules", {
         credentials: "include",
       });
+
+      if (response.status === 401) {
+        setIsUnauthorized(true);
+
+        if (!hasShownLoginAlert.current) {
+          hasShownLoginAlert.current = true;
+          alert("로그인 후 이용할 수 있습니다.");
+          navigate("/");
+        }
+
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("일정 목록 조회 실패");
@@ -34,38 +49,14 @@ const Dashboard = () => {
     } catch (error) {
       console.error("일정 목록 조회 실패:", error);
       setSchedules([]);
+    } finally {
+      setIsCheckingAuth(false);
     }
   };
 
   useEffect(() => {
     fetchSchedules();
   }, []);
-
-  const handleDeleteSchedule = async (scheduleId) => {
-    const confirmed = window.confirm("이 일정을 삭제하시겠습니까?");
-
-    if (!confirmed) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/schedules/${scheduleId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("일정 삭제 실패");
-      }
-
-      alert("일정이 삭제되었습니다.");
-      fetchSchedules();
-    } catch (error) {
-      console.error("일정 삭제 실패:", error);
-      alert("일정 삭제 중 문제가 발생했습니다.");
-    }
-  };
 
   const handleStartEdit = (schedule) => {
     setEditingSchedule(schedule);
@@ -294,6 +285,10 @@ const Dashboard = () => {
       alert("일정 수정 중 문제가 발생했습니다.");
     }
   };
+
+  if (isCheckingAuth || isUnauthorized) {
+    return null;
+  }
 
   return (
     <section className="home-page dashboard-page">

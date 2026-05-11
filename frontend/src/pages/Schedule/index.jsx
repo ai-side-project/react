@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Home/home.css";
 import "./schedule.css";
 
@@ -18,12 +19,28 @@ const Schedule = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const hasShownLoginAlert = useRef(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const fetchFavorites = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/favorites", {
         credentials: "include",
       });
+
+      if (response.status === 401) {
+        setIsUnauthorized(true);
+
+        if (!hasShownLoginAlert.current) {
+          hasShownLoginAlert.current = true;
+          alert("로그인 후 이용할 수 있습니다.");
+          navigate("/login");
+        }
+
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("즐겨찾기 목록 조회 실패");
@@ -35,6 +52,8 @@ const Schedule = () => {
     } catch (error) {
       console.error("즐겨찾기 목록 조회 실패:", error);
       setFavorites([]);
+    } finally {
+      setIsCheckingAuth(false);
     }
   };
 
@@ -225,6 +244,10 @@ const Schedule = () => {
       alert("일정 저장 중 문제가 발생했습니다.");
     }
   };
+
+  if (isCheckingAuth || isUnauthorized) {
+    return null;
+  }
 
   return (
     <section className="home-page">

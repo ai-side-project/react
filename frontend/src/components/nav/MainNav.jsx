@@ -3,11 +3,9 @@ import { useAuthStore } from "../../store/authStore";
 
 const menus = [
   { to: "/", label: "인트로" },
-  { to: "/home", label: "홈" },
+  { to: "/search", label: "여행지 검색" },
   { to: "/schedule", label: "여행 코스 생성" },
-  { to: "/dash", label: "대시보드" },
-  { to: "/board", label: "게시판" },
-  { to: "/review", label: "AI 추천서비스" },
+  { to: "/schedule-management", label: "스케줄 관리" },
   { to: "/admin", label: "관리자 설정", adminOnly: true },
 ];
 

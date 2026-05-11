@@ -1,22 +1,21 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import { useAuthStore } from "./store/authStore";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Chatbot from "./components/Chatbot";
-import DashBoard from "./pages/DashBoard";
-import Board from "./pages/Board";
+import Loading from "./components/Loading";
+
 import Intro from "./pages/Intro";
 import Home from "./pages/Home";
-import Review from "./pages/Review";
-import Admin from "./pages/Admin";
-import Loading from "./components/Loading";
-import Join from "./components/auth/Join";
-import Detail from "./pages/Board/detail";
 import Schedule from "./pages/Schedule";
 import Dashboard from "./pages/Dashboard";
 import ScheduleAnalysis from "./pages/ScheduleAnalysis";
+import Admin from "./pages/Admin";
+import Join from "./components/auth/Join";
 
 // 1. 스타일드 컴포넌트 및 전역 스타일 임포트
 import GlobalStyle from "./styles/Globalstyle";
@@ -61,13 +60,9 @@ function App() {
           <Route path="/" element={<Intro />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/dash" element={<DashBoard />} />
-          <Route path="/board" element={<Board />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/search" element={<Home />} />
           <Route path="/schedule" element={<Schedule />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/board/:id" element={<Detail />} />
+          <Route path="/schedule-management" element={<Dashboard />} />
           <Route
             path="/admin"
             element={user?.isadmin ? <Admin /> : <Navigate to="/" replace />}

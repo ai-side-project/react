@@ -1,12 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db/db");
+const getLoginUserId = (req) => {
+  return req.user?.id || req.session?.user?.id || req.session?.user?.user_id;
+};
+
+const requireLogin = (req, res, next) => {
+  const userId = getLoginUserId(req);
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "로그인이 필요합니다.",
+    });
+  }
+
+  req.userId = userId;
+  next();
+};
 
 // 일정 저장
-router.post("/", async (req, res) => {
+router.post("/", requireLogin, async (req, res) => {
   const { schedule_title, start_date, end_date, memo, places } = req.body;
 
-  const userId = req.user?.id || req.session?.user?.id || 1;
+  const userId = req.userId;
 
   if (!schedule_title || !start_date || !end_date) {
     return res.status(400).json({
@@ -93,8 +109,8 @@ router.post("/", async (req, res) => {
 });
 
 // 저장한 일정 목록 조회
-router.get("/", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+router.get("/", requireLogin, async (req, res) => {
+  const userId = req.userId;
 
   try {
     const [rows] = await pool.query(
@@ -183,8 +199,8 @@ router.get("/", async (req, res) => {
 });
 
 // 일정 상세 조회
-router.get("/:scheduleId", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+router.get("/:scheduleId", requireLogin, async (req, res) => {
+  const userId = req.userId;
   const { scheduleId } = req.params;
 
   try {
@@ -271,8 +287,8 @@ router.get("/:scheduleId", async (req, res) => {
 });
 
 // 일정 수정
-router.put("/:scheduleId", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+router.put("/:scheduleId", requireLogin, async (req, res) => {
+  const userId = req.userId;
   const { scheduleId } = req.params;
   const { schedule_title, start_date, end_date, memo, places } = req.body;
 
@@ -365,8 +381,8 @@ router.put("/:scheduleId", async (req, res) => {
 });
 
 // 일정 삭제
-router.delete("/:scheduleId", async (req, res) => {
-  const userId = req.user?.id || req.session?.user?.id || 1;
+router.delete("/:scheduleId", requireLogin, async (req, res) => {
+  const userId = req.userId;
   const { scheduleId } = req.params;
 
   try {

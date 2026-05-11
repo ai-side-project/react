@@ -1,10 +1,10 @@
-const express = require("express");
-const db = require("../db/db");
+const express = require("express")
+const db = require("../db/db")
 
-const router = express.Router();
+const router = express.Router()
 
 router.get("/:scheduleId/analysis", async (req, res) => {
-  const { scheduleId } = req.params;
+  const { scheduleId } = req.params
 
   try {
     const [scheduleRows] = await db.query(
@@ -18,15 +18,15 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       WHERE id = ?
       `,
       [scheduleId],
-    );
+    )
 
     if (scheduleRows.length === 0) {
       return res.status(404).json({
         message: "일정을 찾을 수 없습니다.",
-      });
+      })
     }
 
-    const schedule = scheduleRows[0];
+    const schedule = scheduleRows[0]
 
     const [placeRows] = await db.query(
       `
@@ -59,7 +59,7 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       ORDER BY sp.visit_order ASC
       `,
       [scheduleId],
-    );
+    )
 
     const places = placeRows.map((place) => ({
       place_id: place.place_id,
@@ -71,7 +71,7 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       address: place.new_address || place.address,
       description: place.description,
       category: place.categories || "기타",
-    }));
+    }))
 
     const fastApiResponse = await fetch(
       "http://host.docker.internal:8000/analysis/schedule",
@@ -88,13 +88,13 @@ router.get("/:scheduleId/analysis", async (req, res) => {
           places,
         }),
       },
-    );
+    )
 
     if (!fastApiResponse.ok) {
-      throw new Error("FastAPI 일정 분석 요청 실패");
+      throw new Error("FastAPI 일정 분석 요청 실패")
     }
 
-    const analysis = await fastApiResponse.json();
+    const analysis = await fastApiResponse.json()
 
     res.json({
       schedule: {
@@ -102,13 +102,13 @@ router.get("/:scheduleId/analysis", async (req, res) => {
         places,
       },
       analysis,
-    });
+    })
   } catch (error) {
-    console.error("AI 일정 분석 실패:", error);
+    console.error("AI 일정 분석 실패:", error)
     res.status(500).json({
       message: "AI 일정 분석 중 문제가 발생했습니다.",
-    });
+    })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

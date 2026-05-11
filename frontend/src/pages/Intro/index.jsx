@@ -130,10 +130,7 @@ const Intro = () => {
         <section className="features-section">
           <div className="features-heading">
             <h2>주요 기능</h2>
-            <p>
-              여행지 검색부터 코스 생성, AI 일정 분석까지 한 번에 도와주는 서울
-              여행 플래너입니다.
-            </p>
+            <p>여행지를 찾고, 저장하고, 분석하는 과정을 단계별로 제공합니다.</p>
           </div>
 
           <div className="feature-grid">

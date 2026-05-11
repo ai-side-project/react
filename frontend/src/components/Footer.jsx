@@ -40,10 +40,10 @@ function Footer() {
               color: "var(--text)",
             }}
           >
-            서울여행 플래너 AI
+            길벗 AI
           </strong>
           <p style={{ margin: 0 }}>
-            서울의 숨은 명소와 문화재를 추천하는 맞춤형 여행 플랫폼
+            서울 여행을 더 똑똑하게 만드는 AI 여행 플래너
           </p>
           <span>© 2026 side project No.1</span>
         </div>

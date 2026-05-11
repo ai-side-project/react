@@ -7,15 +7,13 @@ router.get("/:scheduleId/analysis", async (req, res) => {
   const { scheduleId } = req.params;
 
   try {
-    // 1. 일정 기본 정보 조회
     const [scheduleRows] = await db.query(
       `
       SELECT 
         id AS schedule_id,
         title AS schedule_title,
         start_date,
-        end_date,
-        NULL AS memo
+        end_date
       FROM schedules
       WHERE id = ?
       `,
@@ -30,37 +28,36 @@ router.get("/:scheduleId/analysis", async (req, res) => {
 
     const schedule = scheduleRows[0];
 
-    // 2. 일정에 포함된 장소 목록 조회
     const [placeRows] = await db.query(
       `
-  SELECT
-    sp.place_id,
-    sp.visit_order,
-    sp.visit_date,
-    sp.visit_time,
-    sp.memo,
-    p.name,
-    p.address,
-    p.new_address,
-    p.description,
-    GROUP_CONCAT(c.name ORDER BY c.name SEPARATOR ', ') AS categories
-  FROM schedule_items sp
-  JOIN places p ON sp.place_id = p.id
-  LEFT JOIN place_category_mapping pcm ON p.id = pcm.place_id
-  LEFT JOIN categories c ON pcm.category_id = c.id
-  WHERE sp.schedule_id = ?
-  GROUP BY
-    sp.place_id,
-    sp.visit_order,
-    sp.visit_date,
-    sp.visit_time,
-    sp.memo,
-    p.name,
-    p.address,
-    p.new_address,
-    p.description
-  ORDER BY sp.visit_order ASC
-  `,
+      SELECT
+        sp.place_id,
+        sp.visit_order,
+        sp.visit_date,
+        sp.visit_time,
+        sp.memo,
+        p.name,
+        p.address,
+        p.new_address,
+        p.description,
+        GROUP_CONCAT(c.name ORDER BY c.name SEPARATOR ', ') AS categories
+      FROM schedule_items sp
+      JOIN places p ON sp.place_id = p.id
+      LEFT JOIN place_category_mapping pcm ON p.id = pcm.place_id
+      LEFT JOIN categories c ON pcm.category_id = c.id
+      WHERE sp.schedule_id = ?
+      GROUP BY
+        sp.place_id,
+        sp.visit_order,
+        sp.visit_date,
+        sp.visit_time,
+        sp.memo,
+        p.name,
+        p.address,
+        p.new_address,
+        p.description
+      ORDER BY sp.visit_order ASC
+      `,
       [scheduleId],
     );
 
@@ -76,7 +73,6 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       category: place.categories || "기타",
     }));
 
-    // 3. FastAPI 분석 서버로 일정 데이터 전달
     const fastApiResponse = await fetch(
       "http://host.docker.internal:8000/analysis/schedule",
       {
@@ -89,7 +85,6 @@ router.get("/:scheduleId/analysis", async (req, res) => {
           schedule_title: schedule.schedule_title,
           start_date: schedule.start_date,
           end_date: schedule.end_date,
-          memo: schedule.memo,
           places,
         }),
       },

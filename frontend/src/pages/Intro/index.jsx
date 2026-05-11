@@ -55,9 +55,7 @@ const Intro = () => {
         <section className="hero-section">
           <div className="hero-copy">
             <h1 className="hero-title">
-              서울여행
-              <br />
-              <span>플래너 AI</span>
+              길벗 <span>AI</span>
             </h1>
 
             <p className="hero-desc">

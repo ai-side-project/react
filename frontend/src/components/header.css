@@ -31,8 +31,12 @@
   line-height: 1.1;
   white-space: nowrap;
   flex-shrink: 0;
-  color: var(--primary); /* 브랜드 색상 */
+  color: var(--text);
   text-decoration: none;
+}
+
+.logo-text span {
+  color: var(--primary);
 }
 
 /* 오른쪽 로그인 영역 */

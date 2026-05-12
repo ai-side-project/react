@@ -1,80 +1,82 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../Home/home.css";
-import "./dashboard.css";
+import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import "../Home/home.css"
+import "./dashboard.css"
 
 const Dashboard = () => {
-  const [schedules, setSchedules] = useState([]);
-  const [openedScheduleId, setOpenedScheduleId] = useState(null);
-  const [editingSchedule, setEditingSchedule] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editStartDate, setEditStartDate] = useState("");
-  const [editEndDate, setEditEndDate] = useState("");
-  const [editPlaces, setEditPlaces] = useState([]);
-  const [editMemo, setEditMemo] = useState("");
-  const [placeSearchKeyword, setPlaceSearchKeyword] = useState("");
-  const [placeSearchResults, setPlaceSearchResults] = useState([]);
-  const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
-  const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
+  const [schedules, setSchedules] = useState([])
+  const [openedScheduleId, setOpenedScheduleId] = useState(null)
+  const [editingSchedule, setEditingSchedule] = useState(null)
+  const [editTitle, setEditTitle] = useState("")
+  const [editStartDate, setEditStartDate] = useState("")
+  const [editEndDate, setEditEndDate] = useState("")
+  const [editPlaces, setEditPlaces] = useState([])
+  const [editMemo, setEditMemo] = useState("")
+  const [placeSearchKeyword, setPlaceSearchKeyword] = useState("")
+  const [placeSearchResults, setPlaceSearchResults] = useState([])
+  const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null)
+  const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false)
 
-  const navigate = useNavigate();
-  const hasShownLoginAlert = useRef(false);
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const navigate = useNavigate()
+  const hasShownLoginAlert = useRef(false)
+  const [isUnauthorized, setIsUnauthorized] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+
+  const API_URL = import.meta.env.VITE_API_URL || "/api"
 
   const fetchSchedules = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/schedules", {
+      const response = await fetch(`${API_URL}/schedules`, {
         credentials: "include",
-      });
+      })
 
       if (response.status === 401) {
-        setIsUnauthorized(true);
+        setIsUnauthorized(true)
 
         if (!hasShownLoginAlert.current) {
-          hasShownLoginAlert.current = true;
-          alert("로그인 후 이용할 수 있습니다.");
-          navigate("/");
+          hasShownLoginAlert.current = true
+          alert("로그인 후 이용할 수 있습니다.")
+          navigate("/")
         }
 
-        return;
+        return
       }
 
       if (!response.ok) {
-        throw new Error("일정 목록 조회 실패");
+        throw new Error("일정 목록 조회 실패")
       }
 
-      const data = await response.json();
-      setSchedules(data);
+      const data = await response.json()
+      setSchedules(data)
     } catch (error) {
-      console.error("일정 목록 조회 실패:", error);
-      setSchedules([]);
+      console.error("일정 목록 조회 실패:", error)
+      setSchedules([])
     } finally {
-      setIsCheckingAuth(false);
+      setIsCheckingAuth(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchSchedules();
-  }, []);
+    fetchSchedules()
+  }, [])
 
   const handleStartEdit = (schedule) => {
-    setEditingSchedule(schedule);
+    setEditingSchedule(schedule)
 
-    setEditTitle(schedule.schedule_title || "");
+    setEditTitle(schedule.schedule_title || "")
     setEditStartDate(
       schedule.start_date ? schedule.start_date.slice(0, 10) : "",
-    );
-    setEditEndDate(schedule.end_date ? schedule.end_date.slice(0, 10) : "");
-    setEditMemo(schedule.places?.[0]?.memo || "");
+    )
+    setEditEndDate(schedule.end_date ? schedule.end_date.slice(0, 10) : "")
+    setEditMemo(schedule.places?.[0]?.memo || "")
 
     setEditPlaces(
       (schedule.places || []).map((place, index) => ({
         ...place,
         visit_order: place.visit_order || index + 1,
       })),
-    );
-  };
+    )
+  }
 
   const handleRemoveEditPlace = (placeId) => {
     setEditPlaces((prev) =>
@@ -84,84 +86,84 @@ const Dashboard = () => {
           ...place,
           visit_order: index + 1,
         })),
-    );
-  };
+    )
+  }
 
   const handleMoveEditPlaceUp = (index) => {
-    if (index === 0) return;
+    if (index === 0) return
 
     setEditPlaces((prev) => {
-      const copied = [...prev];
-      [copied[index - 1], copied[index]] = [copied[index], copied[index - 1]];
+      const copied = [...prev]
+      ;[copied[index - 1], copied[index]] = [copied[index], copied[index - 1]]
 
       return copied.map((place, placeIndex) => ({
         ...place,
         visit_order: placeIndex + 1,
-      }));
-    });
-  };
+      }))
+    })
+  }
 
   const handleMoveEditPlaceDown = (index) => {
     setEditPlaces((prev) => {
-      if (index === prev.length - 1) return prev;
+      if (index === prev.length - 1) return prev
 
-      const copied = [...prev];
-      [copied[index], copied[index + 1]] = [copied[index + 1], copied[index]];
+      const copied = [...prev]
+      ;[copied[index], copied[index + 1]] = [copied[index + 1], copied[index]]
 
       return copied.map((place, placeIndex) => ({
         ...place,
         visit_order: placeIndex + 1,
-      }));
-    });
-  };
+      }))
+    })
+  }
 
   const handleCancelEdit = () => {
-    setEditingSchedule(null);
-    setEditTitle("");
-    setEditStartDate("");
-    setEditEndDate("");
-    setEditMemo("");
-    setEditPlaces([]);
-  };
+    setEditingSchedule(null)
+    setEditTitle("")
+    setEditStartDate("")
+    setEditEndDate("")
+    setEditMemo("")
+    setEditPlaces([])
+  }
 
   const handleSearchPlacesForEdit = async () => {
     if (!placeSearchKeyword.trim()) {
-      alert("검색어를 입력해주세요.");
-      return;
+      alert("검색어를 입력해주세요.")
+      return
     }
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/home/search?keyword=${encodeURIComponent(
+        `${API_URL}/home/search?keyword=${encodeURIComponent(
           placeSearchKeyword,
         )}`,
         {
           credentials: "include",
         },
-      );
+      )
 
       if (!response.ok) {
-        throw new Error("장소 검색 실패");
+        throw new Error("장소 검색 실패")
       }
 
-      const data = await response.json();
-      setPlaceSearchResults(data);
+      const data = await response.json()
+      setPlaceSearchResults(data)
     } catch (error) {
-      console.error("장소 검색 실패:", error);
-      alert("장소 검색 중 문제가 발생했습니다.");
+      console.error("장소 검색 실패:", error)
+      alert("장소 검색 중 문제가 발생했습니다.")
     }
-  };
+  }
 
   const handleAddEditPlace = (place) => {
     const alreadyAdded = editPlaces.some(
       (editPlace) =>
         editPlace.place_id === place.id ||
         editPlace.place_id === place.place_id,
-    );
+    )
 
     if (alreadyAdded) {
-      alert("이미 일정에 추가된 장소입니다.");
-      return;
+      alert("이미 일정에 추가된 장소입니다.")
+      return
     }
 
     setEditPlaces((prev) => [
@@ -171,8 +173,8 @@ const Dashboard = () => {
         place_id: place.id || place.place_id,
         visit_order: prev.length + 1,
       },
-    ]);
-  };
+    ])
+  }
 
   const handleCancelAddedPlace = (placeId) => {
     setEditPlaces((prev) =>
@@ -182,23 +184,42 @@ const Dashboard = () => {
           ...place,
           visit_order: index + 1,
         })),
-    );
-  };
+    )
+  }
+
+  const handleDeleteSchedule = async (scheduleId) => {
+    if (!window.confirm("정말로 이 일정을 삭제하시겠습니까?")) return
+
+    try {
+      const response = await fetch(`${API_URL}/schedules/${scheduleId}`, {
+        method: "DELETE",
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        throw new Error("일정 삭제 실패")
+      }
+
+      alert("일정이 삭제되었습니다.")
+      // 목록 새로고침
+      fetchSchedules()
+    } catch (error) {
+      console.error("일정 삭제 에러:", error)
+      alert("일정 삭제 중 오류가 발생했습니다.")
+    }
+  }
 
   const handleOpenPlaceDetail = async (placeId) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/home/places/${placeId}`,
-        {
-          credentials: "include",
-        },
-      );
+      const response = await fetch(`${API_URL}/home/places/${placeId}`, {
+        credentials: "include",
+      })
 
       if (!response.ok) {
-        throw new Error("장소 상세 조회 실패");
+        throw new Error("장소 상세 조회 실패")
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
       setSelectedPlaceDetail({
         ...data.place,
@@ -208,51 +229,51 @@ const Dashboard = () => {
           data.place?.main_image ||
           data.place?.main_image_url ||
           null,
-      });
+      })
 
-      setIsPlaceModalOpen(true);
+      setIsPlaceModalOpen(true)
     } catch (error) {
-      console.error("장소 상세 조회 실패:", error);
-      alert("장소 상세 정보를 불러오는 중 문제가 발생했습니다.");
+      console.error("장소 상세 조회 실패:", error)
+      alert("장소 상세 정보를 불러오는 중 문제가 발생했습니다.")
     }
-  };
+  }
 
   const handleClosePlaceModal = () => {
-    setSelectedPlaceDetail(null);
-    setIsPlaceModalOpen(false);
-  };
+    setSelectedPlaceDetail(null)
+    setIsPlaceModalOpen(false)
+  }
 
   const handleUpdateSchedule = async () => {
-    if (!editingSchedule) return;
+    if (!editingSchedule) return
 
     if (!editTitle.trim()) {
-      alert("일정 제목을 입력해주세요.");
-      return;
+      alert("일정 제목을 입력해주세요.")
+      return
     }
 
     if (!editStartDate) {
-      alert("여행 시작일을 선택해주세요.");
-      return;
+      alert("여행 시작일을 선택해주세요.")
+      return
     }
 
     if (!editEndDate) {
-      alert("여행 종료일을 선택해주세요.");
-      return;
+      alert("여행 종료일을 선택해주세요.")
+      return
     }
 
     if (editEndDate < editStartDate) {
-      alert("여행 종료일을 확인해 주세요.");
-      return;
+      alert("여행 종료일을 확인해 주세요.")
+      return
     }
 
     if (editPlaces.length === 0) {
-      alert("일정에 최소 1개 이상의 장소가 필요합니다.");
-      return;
+      alert("일정에 최소 1개 이상의 장소가 필요합니다.")
+      return
     }
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/schedules/${editingSchedule.schedule_id}`,
+        `${API_URL}/schedules/${editingSchedule.schedule_id}`,
         {
           method: "PUT",
           headers: {
@@ -270,24 +291,24 @@ const Dashboard = () => {
             })),
           }),
         },
-      );
+      )
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "일정 수정 실패");
+        const errorData = await response.json()
+        throw new Error(errorData.message || "일정 수정 실패")
       }
 
-      alert("일정이 수정되었습니다.");
-      handleCancelEdit();
-      fetchSchedules();
+      alert("일정이 수정되었습니다.")
+      handleCancelEdit()
+      fetchSchedules()
     } catch (error) {
-      console.error("일정 수정 실패:", error);
-      alert("일정 수정 중 문제가 발생했습니다.");
+      console.error("일정 수정 실패:", error)
+      alert("일정 수정 중 문제가 발생했습니다.")
     }
-  };
+  }
 
   if (isCheckingAuth || isUnauthorized) {
-    return null;
+    return null
   }
 
   return (
@@ -377,7 +398,7 @@ const Dashboard = () => {
                           placeholder="예: 경복궁, 한강, 박물관"
                           onKeyDown={(event) => {
                             if (event.key === "Enter") {
-                              handleSearchPlacesForEdit();
+                              handleSearchPlacesForEdit()
                             }
                           }}
                         />
@@ -399,7 +420,7 @@ const Dashboard = () => {
                           {placeSearchResults.map((place) => {
                             const alreadyAdded = editPlaces.some(
                               (editPlace) => editPlace.place_id === place.id,
-                            );
+                            )
 
                             return (
                               <div
@@ -420,19 +441,19 @@ const Dashboard = () => {
                                   type="button"
                                   className={alreadyAdded ? "cancel" : ""}
                                   onClick={(event) => {
-                                    event.stopPropagation();
+                                    event.stopPropagation()
 
                                     if (alreadyAdded) {
-                                      handleCancelAddedPlace(place.id);
+                                      handleCancelAddedPlace(place.id)
                                     } else {
-                                      handleAddEditPlace(place);
+                                      handleAddEditPlace(place)
                                     }
                                   }}
                                 >
                                   {alreadyAdded ? "취소" : "추가"}
                                 </button>
                               </div>
-                            );
+                            )
                           })}
                         </div>
                       )}
@@ -464,8 +485,8 @@ const Dashboard = () => {
                                 type="button"
                                 aria-label="위로 이동"
                                 onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleMoveEditPlaceUp(index);
+                                  event.stopPropagation()
+                                  handleMoveEditPlaceUp(index)
                                 }}
                                 disabled={index === 0}
                               >
@@ -476,8 +497,8 @@ const Dashboard = () => {
                                 type="button"
                                 aria-label="아래로 이동"
                                 onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleMoveEditPlaceDown(index);
+                                  event.stopPropagation()
+                                  handleMoveEditPlaceDown(index)
                                 }}
                                 disabled={index === editPlaces.length - 1}
                               >
@@ -488,8 +509,8 @@ const Dashboard = () => {
                                 type="button"
                                 className="danger"
                                 onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleRemoveEditPlace(place.place_id);
+                                  event.stopPropagation()
+                                  handleRemoveEditPlace(place.place_id)
                                 }}
                               >
                                 삭제
@@ -700,7 +721,7 @@ const Dashboard = () => {
         </div>
       ) : null}
     </section>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

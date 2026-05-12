@@ -6,8 +6,8 @@ const axios = require("axios")
 const FormData = require("form-data")
 const db = require("../db/db")
 const router = express.Router()
-
-const FASTAPI_URL = "http://host.docker.internal:8000/admin/upload"
+const FASTAPI_URL =
+  process.env.FASTAPI_URL || "http://10.0.1.7:8000/admin/upload"
 
 // ==================== 인증 미들웨어 ====================
 function requireAdmin(req, res, next) {
@@ -180,7 +180,8 @@ router.delete("/files/:filename", requireAdmin, async (req, res) => {
   try {
     // 1. FastAPI(ChromaDB)에 삭제 요청 전송
     // FastAPI 쪽에 삭제 API를 구현해야 합니다. (예: DELETE /admin/delete?filename=...)
-    const FASTAPI_DELETE_URL = `http://host.docker.internal:8000/admin/delete`
+    const FASTAPI_DELETE_URL =
+      process.env.FASTAPI_URL || "http://10.0.1.7:8000/admin/delete"
     await axios.delete(FASTAPI_DELETE_URL, { params: { filename } })
 
     // 2. MySQL에서 정보 삭제

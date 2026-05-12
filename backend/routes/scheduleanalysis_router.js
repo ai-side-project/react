@@ -2,7 +2,7 @@ const express = require("express")
 const db = require("../db/db")
 
 const router = express.Router()
-
+const BASE_URL = process.env.FASTAPI_URL || "http://10.0.1.7:8000"
 router.get("/:scheduleId/analysis", async (req, res) => {
   const { scheduleId } = req.params
 
@@ -73,22 +73,19 @@ router.get("/:scheduleId/analysis", async (req, res) => {
       category: place.categories || "기타",
     }))
 
-    const fastApiResponse = await fetch(
-      "http://host.docker.internal:8000/analysis/schedule",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          schedule_id: schedule.schedule_id,
-          schedule_title: schedule.schedule_title,
-          start_date: schedule.start_date,
-          end_date: schedule.end_date,
-          places,
-        }),
+    const fastApiResponse = await fetch(`${BASE_URL}/analysis/schedule`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    )
+      body: JSON.stringify({
+        schedule_id: schedule.schedule_id,
+        schedule_title: schedule.schedule_title,
+        start_date: schedule.start_date,
+        end_date: schedule.end_date,
+        places,
+      }),
+    })
 
     if (!fastApiResponse.ok) {
       throw new Error("FastAPI 일정 분석 요청 실패")

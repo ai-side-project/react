@@ -1,124 +1,122 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../Home/home.css";
-import "./schedule.css";
-
+import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import "../Home/home.css"
+import "./schedule.css"
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 const Schedule = () => {
-  const [favorites, setFavorites] = useState([]);
-  const [selectedPlaces, setSelectedPlaces] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [favorites, setFavorites] = useState([])
+  const [selectedPlaces, setSelectedPlaces] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const ITEMS_PER_PAGE = 6;
-  const MAX_PAGE_BUTTONS = 10;
+  const ITEMS_PER_PAGE = 6
+  const MAX_PAGE_BUTTONS = 10
 
-  const [scheduleTitle, setScheduleTitle] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [memo, setMemo] = useState("");
+  const [scheduleTitle, setScheduleTitle] = useState("")
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+  const [memo, setMemo] = useState("")
 
-  const [selectedPlace, setSelectedPlace] = useState(null);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
-  const hasShownLoginAlert = useRef(false);
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [selectedPlace, setSelectedPlace] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const navigate = useNavigate()
+  const hasShownLoginAlert = useRef(false)
+  const [isUnauthorized, setIsUnauthorized] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 
   const fetchFavorites = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/favorites", {
+      const response = await fetch(`${API_URL}/favorites`, {
         credentials: "include",
-      });
+      })
 
       if (response.status === 401) {
-        setIsUnauthorized(true);
+        setIsUnauthorized(true)
 
         if (!hasShownLoginAlert.current) {
-          hasShownLoginAlert.current = true;
-          alert("로그인 후 이용할 수 있습니다.");
-          navigate("/login");
+          hasShownLoginAlert.current = true
+          alert("로그인 후 이용할 수 있습니다.")
+          navigate("/login")
         }
 
-        return;
+        return
       }
 
       if (!response.ok) {
-        throw new Error("즐겨찾기 목록 조회 실패");
+        throw new Error("즐겨찾기 목록 조회 실패")
       }
 
-      const data = await response.json();
-      setFavorites(data);
-      setCurrentPage(1);
+      const data = await response.json()
+      setFavorites(data)
+      setCurrentPage(1)
     } catch (error) {
-      console.error("즐겨찾기 목록 조회 실패:", error);
-      setFavorites([]);
+      console.error("즐겨찾기 목록 조회 실패:", error)
+      setFavorites([])
     } finally {
-      setIsCheckingAuth(false);
+      setIsCheckingAuth(false)
     }
-  };
+  }
 
   const getPlaceImage = (place) => {
     if (Array.isArray(place.images) && place.images.length > 0) {
-      return place.images[0];
+      return place.images[0]
     }
 
-    return "/images/default-place-image.png";
-  };
+    return "/images/default-place-image.png"
+  }
 
   useEffect(() => {
-    fetchFavorites();
-  }, []);
+    fetchFavorites()
+  }, [])
 
-  const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE)
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const currentFavorites = favorites.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE,
-  );
+  )
 
-  const currentPageGroup = Math.ceil(currentPage / MAX_PAGE_BUTTONS);
-  const startPage = (currentPageGroup - 1) * MAX_PAGE_BUTTONS + 1;
-  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, totalPages);
+  const currentPageGroup = Math.ceil(currentPage / MAX_PAGE_BUTTONS)
+  const startPage = (currentPageGroup - 1) * MAX_PAGE_BUTTONS + 1
+  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, totalPages)
 
-  const pageNumbers = [];
+  const pageNumbers = []
 
   for (let i = startPage; i <= endPage; i += 1) {
-    pageNumbers.push(i);
+    pageNumbers.push(i)
   }
 
   const handlePlaceClick = async (placeId) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/home/places/${placeId}`,
-      );
+      const response = await fetch(`${API_URL}/home/places/${placeId}`)
 
       if (!response.ok) {
-        throw new Error("장소 상세 조회 실패");
+        throw new Error("장소 상세 조회 실패")
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
-      setSelectedImages(data.images);
-      setIsModalOpen(true);
-      setSelectedPlace(data.place);
+      setSelectedImages(data.images)
+      setIsModalOpen(true)
+      setSelectedPlace(data.place)
     } catch (error) {
-      console.error("장소 상세 조회 실패:", error);
+      console.error("장소 상세 조회 실패:", error)
     }
-  };
+  }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedPlace(null);
-    setSelectedImages([]);
-  };
+    setIsModalOpen(false)
+    setSelectedPlace(null)
+    setSelectedImages([])
+  }
 
   const handleAddToSchedule = (place) => {
-    const alreadyAdded = selectedPlaces.some((item) => item.id === place.id);
+    const alreadyAdded = selectedPlaces.some((item) => item.id === place.id)
 
     if (alreadyAdded) {
-      alert("이미 일정에 추가된 장소입니다.");
-      return;
+      alert("이미 일정에 추가된 장소입니다.")
+      return
     }
 
     setSelectedPlaces((prev) => [
@@ -127,8 +125,8 @@ const Schedule = () => {
         ...place,
         visit_order: prev.length + 1,
       },
-    ]);
-  };
+    ])
+  }
 
   const handleRemoveFromSchedule = (placeId) => {
     setSelectedPlaces((prev) =>
@@ -138,37 +136,34 @@ const Schedule = () => {
           ...place,
           visit_order: index + 1,
         })),
-    );
-  };
+    )
+  }
 
   const handleRemoveFavorite = async (placeId) => {
-    const confirmed = window.confirm("즐겨찾기에서 삭제하시겠습니까?");
+    const confirmed = window.confirm("즐겨찾기에서 삭제하시겠습니까?")
 
-    if (!confirmed) return;
+    if (!confirmed) return
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/favorites/${placeId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const response = await fetch(`${API_URL}/favorites/${placeId}`, {
+        method: "DELETE",
+        credentials: "include",
+      })
 
       if (!response.ok) {
-        throw new Error("즐겨찾기 해제 실패");
+        throw new Error("즐겨찾기 해제 실패")
       }
 
       setFavorites((prev) => {
-        const nextFavorites = prev.filter((place) => place.id !== placeId);
-        const nextTotalPages = Math.ceil(nextFavorites.length / ITEMS_PER_PAGE);
+        const nextFavorites = prev.filter((place) => place.id !== placeId)
+        const nextTotalPages = Math.ceil(nextFavorites.length / ITEMS_PER_PAGE)
 
         if (currentPage > nextTotalPages) {
-          setCurrentPage(Math.max(nextTotalPages, 1));
+          setCurrentPage(Math.max(nextTotalPages, 1))
         }
 
-        return nextFavorites;
-      });
+        return nextFavorites
+      })
 
       setSelectedPlaces((prev) =>
         prev
@@ -177,41 +172,41 @@ const Schedule = () => {
             ...place,
             visit_order: index + 1,
           })),
-      );
+      )
     } catch (error) {
-      console.error("즐겨찾기 해제 실패:", error);
-      alert("즐겨찾기 해제 중 문제가 발생했습니다.");
+      console.error("즐겨찾기 해제 실패:", error)
+      alert("즐겨찾기 해제 중 문제가 발생했습니다.")
     }
-  };
+  }
 
   const handleSaveSchedule = async () => {
     if (!scheduleTitle.trim()) {
-      alert("일정 제목을 입력해주세요.");
-      return;
+      alert("일정 제목을 입력해주세요.")
+      return
     }
 
     if (!startDate) {
-      alert("여행 시작일을 선택해주세요.");
-      return;
+      alert("여행 시작일을 선택해주세요.")
+      return
     }
 
     if (!endDate) {
-      alert("여행 종료일을 선택해주세요.");
-      return;
+      alert("여행 종료일을 선택해주세요.")
+      return
     }
 
     if (endDate < startDate) {
-      alert("여행 종료일을 확인 해 주세요.");
-      return;
+      alert("여행 종료일을 확인 해 주세요.")
+      return
     }
 
     if (selectedPlaces.length === 0) {
-      alert("일정에 추가할 장소를 선택해주세요.");
-      return;
+      alert("일정에 추가할 장소를 선택해주세요.")
+      return
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/schedules", {
+      const response = await fetch(`${API_URL}/schedules`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -227,26 +222,26 @@ const Schedule = () => {
             visit_order: index + 1,
           })),
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("일정 저장 실패");
+        throw new Error("일정 저장 실패")
       }
 
-      alert("일정이 저장되었습니다.");
-      setSelectedPlaces([]);
-      setScheduleTitle("");
-      setStartDate("");
-      setEndDate("");
-      setMemo("");
+      alert("일정이 저장되었습니다.")
+      setSelectedPlaces([])
+      setScheduleTitle("")
+      setStartDate("")
+      setEndDate("")
+      setMemo("")
     } catch (error) {
-      console.error("일정 저장 실패:", error);
-      alert("일정 저장 중 문제가 발생했습니다.");
+      console.error("일정 저장 실패:", error)
+      alert("일정 저장 중 문제가 발생했습니다.")
     }
-  };
+  }
 
   if (isCheckingAuth || isUnauthorized) {
-    return null;
+    return null
   }
 
   return (
@@ -298,8 +293,8 @@ const Schedule = () => {
                             type="button"
                             className="favorite-button active"
                             onClick={(event) => {
-                              event.stopPropagation();
-                              handleRemoveFavorite(place.id);
+                              event.stopPropagation()
+                              handleRemoveFavorite(place.id)
                             }}
                           >
                             ♥
@@ -321,8 +316,8 @@ const Schedule = () => {
                             type="button"
                             className="add-schedule-button"
                             onClick={(event) => {
-                              event.stopPropagation();
-                              handleAddToSchedule(place);
+                              event.stopPropagation()
+                              handleAddToSchedule(place)
                             }}
                           >
                             일정에 추가
@@ -569,7 +564,7 @@ const Schedule = () => {
         ) : null}
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Schedule;
+export default Schedule

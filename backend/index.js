@@ -1,4 +1,5 @@
 require("dotenv").config()
+const FASTAPI_URL = process.env.FASTAPI_URL
 const express = require("express")
 const path = require("path")
 const cookieParser = require("cookie-parser")
@@ -44,12 +45,10 @@ pool
 const app = express()
 
 const allowedOrigins = [
-  "http://localhost:3000", // 로컬 접속용
-  //"http://[NCP_공인_IP]:3000",
-  "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
-  "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
-  "http://192.168.10.56:8081",
-  "http://192.168.10.10:8081",
+  "http://localhost", // 도커 Nginx 접속용 (포트 없음)
+  "http://127.0.0.1", // 루프백 접속용
+  "http://localhost:5173", // Vite 개발 서버용
+  "http://101.79.18.19",
 ]
 
 app.use(

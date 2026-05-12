@@ -1,63 +1,63 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import "./scheduleAnalysis.css";
-
+import { useEffect, useRef, useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import "./scheduleAnalysis.css"
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 const ScheduleAnalysis = () => {
-  const { scheduleId } = useParams();
-  const navigate = useNavigate();
-  const lastFetchedScheduleId = useRef(null);
+  const { scheduleId } = useParams()
+  const navigate = useNavigate()
+  const lastFetchedScheduleId = useRef(null)
 
-  const [schedule, setSchedule] = useState(null);
-  const [analysis, setAnalysis] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [schedule, setSchedule] = useState(null)
+  const [analysis, setAnalysis] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const fetchAnalysis = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/schedules/${scheduleId}/analysis`,
+        `${API_URL}/schedules/${scheduleId}/analysis`,
         {
           credentials: "include",
         },
-      );
+      )
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("AI 분석 응답 에러:", errorText);
-        throw new Error("AI 분석 조회 실패");
+        const errorText = await response.text()
+        console.error("AI 분석 응답 에러:", errorText)
+        throw new Error("AI 분석 조회 실패")
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
-      setSchedule(data.schedule);
-      setAnalysis(data.analysis);
+      setSchedule(data.schedule)
+      setAnalysis(data.analysis)
     } catch (error) {
-      console.error("AI 분석 조회 실패:", error);
-      alert("AI 분석 결과를 불러오는 중 문제가 발생했습니다.");
+      console.error("AI 분석 조회 실패:", error)
+      alert("AI 분석 결과를 불러오는 중 문제가 발생했습니다.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    if (!scheduleId) return;
+    if (!scheduleId) return
 
     if (lastFetchedScheduleId.current === scheduleId) {
-      return;
+      return
     }
 
-    lastFetchedScheduleId.current = scheduleId;
-    fetchAnalysis();
-  }, [scheduleId]);
+    lastFetchedScheduleId.current = scheduleId
+    fetchAnalysis()
+  }, [scheduleId])
 
   const formatDate = (dateString) => {
-    if (!dateString) return "-";
+    if (!dateString) return "-"
 
     return new Date(dateString).toLocaleDateString("ko-KR", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-    });
-  };
+    })
+  }
 
   const scoreItems = [
     {
@@ -85,7 +85,7 @@ const ScheduleAnalysis = () => {
       label: "추천도",
       value: analysis?.scores?.recommendation || 3,
     },
-  ];
+  ]
 
   const getCategoryLabel = (category) => {
     const categoryMap = {
@@ -97,41 +97,41 @@ const ScheduleAnalysis = () => {
       Exhibitions: "전시",
       Libraries: "도서관",
       Culture: "문화공간",
-    };
+    }
 
-    return categoryMap[category] || category || "기타";
-  };
+    return categoryMap[category] || category || "기타"
+  }
 
   const getCategoryStats = (places) => {
-    const categoryMap = {};
+    const categoryMap = {}
 
     places.forEach((place) => {
       const categories = place.category
         ? place.category.split(",").map((category) => category.trim())
-        : ["기타"];
+        : ["기타"]
 
       categories.forEach((category) => {
-        if (!category) return;
+        if (!category) return
 
-        const categoryLabel = getCategoryLabel(category);
+        const categoryLabel = getCategoryLabel(category)
 
-        categoryMap[categoryLabel] = (categoryMap[categoryLabel] || 0) + 1;
-      });
-    });
+        categoryMap[categoryLabel] = (categoryMap[categoryLabel] || 0) + 1
+      })
+    })
 
     const total = Object.values(categoryMap).reduce(
       (sum, count) => sum + count,
       0,
-    );
+    )
 
     return Object.entries(categoryMap).map(([name, count]) => ({
       name,
       count,
       percent: Math.round((count / total) * 100),
-    }));
-  };
+    }))
+  }
 
-  const categoryStats = schedule ? getCategoryStats(schedule.places) : [];
+  const categoryStats = schedule ? getCategoryStats(schedule.places) : []
 
   if (isLoading) {
     return (
@@ -144,7 +144,7 @@ const ScheduleAnalysis = () => {
           </div>
         </div>
       </section>
-    );
+    )
   }
 
   if (!schedule || !analysis) {
@@ -166,7 +166,7 @@ const ScheduleAnalysis = () => {
           </div>
         </div>
       </section>
-    );
+    )
   }
 
   return (
@@ -354,7 +354,7 @@ const ScheduleAnalysis = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ScheduleAnalysis;
+export default ScheduleAnalysis

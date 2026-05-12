@@ -1,7 +1,7 @@
 const SCENARIOS = require("./chatbotData")
 const axios = require("axios")
 
-const FASTAPI_URL = "http://host.docker.internal:8000/chatbot/"
+const FASTAPI_URL = process.env.FASTAPI_URL || "http://10.0.1.7:8000/chatbot/"
 
 async function callAiAgent(userId, message) {
   try {

@@ -154,9 +154,9 @@ const ScheduleAnalysis = () => {
           <button
             type="button"
             className="analysis-back-button"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/schedule-management")}
           >
-            ← 대시보드로 돌아가기
+            ← 스케줄 관리로 돌아가기
           </button>
 
           <div className="analysis-hero">
@@ -175,9 +175,9 @@ const ScheduleAnalysis = () => {
         <button
           type="button"
           className="analysis-back-button"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/schedule-management")}
         >
-          ← 대시보드로 돌아가기
+          ← 스케줄 관리로 돌아가기
         </button>
 
         <div className="analysis-hero">
